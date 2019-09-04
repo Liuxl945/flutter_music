@@ -29,9 +29,6 @@ class BodyPage extends Page {
   }
 
   BodyPage.formBuild(BuildFn build,{this.noAnimate = true,this.title}){
-    
-
-
     _build = build;
   }
 }

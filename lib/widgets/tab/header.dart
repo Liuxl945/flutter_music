@@ -5,13 +5,13 @@ import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_music/path.dart' as Path;
 
 class Header extends StatelessWidget {
-  
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         Container(
-          height: screen.setHeight(88),
+          height: 44,
           color: config.BaseColor,
           child: logoImage(),
         ),
@@ -32,7 +32,7 @@ class Header extends StatelessWidget {
               ),
             ),
           ),
-        ),        
+        ),
       ],
     );
   }
