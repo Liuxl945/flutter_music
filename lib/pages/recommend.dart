@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/base.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/plugin/fit.dart';
@@ -7,11 +8,9 @@ import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-
 final recommendPage = () => BodyPage.formBuild((ctx, params, router){
-
-
-  Widget swiperBanner(){
+  
+  Widget swiperBanner() {
     final List photo = [
       "https://img01.hua.com/uploadpic/newpic/9010011.jpg_220x240.jpg",
       "https://img01.hua.com/uploadpic/newpic/9012345.jpg_220x240.jpg",
@@ -36,8 +35,11 @@ final recommendPage = () => BodyPage.formBuild((ctx, params, router){
           onTap: (index){
             print(index);
           },
+
           loop: true,
+          autoplay: true,
           itemCount: photo.length,
+          pagination: SwiperPagination(),
         ),
       ),
     );

@@ -42,11 +42,11 @@ class Header extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Image.asset(
-          'assets/image/logo3x.png',
-          width: screen.setWidth(60),
-          height: screen.setHeight(64),
-        ),
+        // Image.asset(
+        //   'assets/image/logo3x.png',
+        //   width: screen.setWidth(60),
+        //   height: screen.setHeight(64),
+        // ),
         SizedBox(width: screen.setHeight(10)),
         Text(
           'Chicken Music',
