@@ -49,7 +49,9 @@ class _RecommendPageState extends State<RecommendPage> {
         }else{
           return Container(
             height: screen.setHeight(300),
-            child: Text('暂时没有轮播图数据'),
+            child: Center(
+              child: Text('暂时没有轮播图数据'),
+            ),
           );
         }
       },
@@ -111,12 +113,10 @@ class _RecommendPageState extends State<RecommendPage> {
           
           List<Map> songList = (data['data']['list'] as List).cast();
           
-          print('开始过去数据-------------》');
-          print(songList);
           return songItems(songList);
         }else{
           return Container(
-            child: Text('暂时没有轮播图数据'),
+            child: Center(child: Text('暂时没有歌曲列表数据')),
           );
         }
       },
@@ -124,42 +124,78 @@ class _RecommendPageState extends State<RecommendPage> {
   }
 
   Widget songItems(songList){
-    return ListView.builder(
-      itemCount: songList.lenth,
-      itemBuilder: (BuildContext context, int index) {
-        // return songItem(songList[index]);
-        return Text('$index');
-      },
+    List<Widget> list = [];
+    for(int i = 0;i<songList.length;i++){
+      list.add(
+        songItem(songList[i]),
+      );
+    }
+
+    return Column(
+      children: list,
     );
   }
 
   // 单个歌曲
   Widget songItem(song){
-    return Flex(
-      direction:Axis.horizontal,
-      children: <Widget>[
-        Image.network(song['imgurl'],
-          fit:BoxFit.cover,
-          width: screen.setHeight(120),
-          height: screen.setWidth(120),
+    return GestureDetector(
+      onTap: (){
+        print(song);
+      },
+      child: Container(
+        color: config.BaseColor,
+        height: screen.setHeight(160),
+        padding: EdgeInsets.fromLTRB(screen.setWidth(40), 0, screen.setWidth(40), screen.setWidth(40)),
+        child: Flex(
+          direction:Axis.horizontal,
+          children: <Widget>[
+            leftImage(song),
+            rightText(song),
+          ],
         ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: EdgeInsets.only(left: screen.setWidth(40)),
-            child: Column(
-              children: <Widget>[
-                Text(song['creator']['name'] ?? '',style:TextStyle(
-                  color: Colors.white,
-                )),
-                Text(song['dissname'] ?? '',style:TextStyle(
-                  color: config.PrimaryFontColor,
-                ))
-              ],
+      ),
+    );
+    
+    
+  }
+
+  Widget leftImage(song){
+    return FadeInImage.memoryNetwork(
+      placeholder:kTransparentImage,
+      image:song['imgurl'],
+      fit: BoxFit.cover,
+      width: screen.setHeight(120),
+      height: screen.setWidth(120),
+    );
+  }
+
+
+  Widget rightText(song){
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(left: screen.setWidth(40)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(song['creator']['name'] ?? '',style:TextStyle(
+                color: Colors.white,
+                fontSize: screen.setSp(28),
+              )),
             ),
-          )
+            SizedBox(height: screen.setHeight(26)),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(song['dissname'] ?? '',style:TextStyle(
+                color: config.PrimaryFontColor,
+                fontSize: screen.setSp(24),
+              )),
+            ),
+          ],
         ),
-      ],
+      )
     );
   }
 

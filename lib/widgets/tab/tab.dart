@@ -50,29 +50,31 @@ class TabNav extends StatelessWidget {
                       params == Routes.recommend ? 0 : 
                       params == Routes.singer ? 1 : 
                       params == Routes.ranking ? 2 : 3;
-    return RaisedButton(
-      onPressed:(){
+    return GestureDetector(
+      onTap: (){
         if(index == selectIndex) return;
         onTap();
       },
-      color:config.BaseColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(name,
-            style: TextStyle(
-              fontSize: screen.setSp(30),
-              color: index == selectIndex ? config.PrimaryColor : config.PrimaryFontColor,
+      child: Container(
+        color: config.BaseColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(name,
+              style: TextStyle(
+                fontSize: screen.setSp(30),
+                color: index == selectIndex ? config.PrimaryColor : config.PrimaryFontColor,
+              ),
             ),
-          ),
-          SizedBox(height: screen.setHeight(10)),
-          Container(
-            height: screen.setHeight(4),
-            width: screen.setHeight(62),
-            color: index == selectIndex ? config.PrimaryColor : config.BaseColor,
-          ),
-        ],
+            SizedBox(height: screen.setHeight(10)),
+            Container(
+              height: screen.setHeight(4),
+              width: screen.setHeight(62),
+              color: index == selectIndex ? config.PrimaryColor : config.BaseColor,
+            ),
+          ],
+        ),
       ),
     );
   }

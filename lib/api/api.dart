@@ -24,7 +24,6 @@ class MusicApi {
   }
 
   static Future getDiscList() async{
-
     final url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg';
 
     Options options = Options(headers: {
@@ -44,6 +43,24 @@ class MusicApi {
       'sortId': 5,
       'sin': 0,
       'ein': 29
+    };
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
+    return response.data;
+  }
+
+  static Future getTopList() async{
+    final url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg';
+
+    Options options = Options(headers: {
+      'referer': 'https://m.y.qq.com/',
+      'origin': 'https://y.qq.com'
+    });
+
+    final Map<String,dynamic> queryParameters = {
+      'platform': 'h5',
+      'uin': 0,
+      'needNewCode': 1,
     };
     queryParameters.addAll(config.commonParams);
     Response response = await dio.get(url,queryParameters:queryParameters,options: options);
