@@ -9,16 +9,18 @@ class CommonNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Header(),
-          TabNav(params:params),
-          Expanded(
-            child: listChildren,
-          )
-        ],
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Header(),
+            TabNav(params:params),
+            Expanded(
+              child: listChildren,
+            )
+          ],
+        ),
       ),
     );
   }

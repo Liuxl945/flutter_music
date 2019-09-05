@@ -1,21 +1,25 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_music/base.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 
-final singerPage = () => BodyPage.formBuild((ctx, params, router){
+class SingerPage extends StatelessWidget {
+  const SingerPage({Key key}) : super(key: key);
   
-  return CommonNavigation(
-    params: params,
-    listChildren: ListView(
-      children: <Widget>[
-        Text('singer',
-          style: TextStyle(
-            fontSize: screen.setSp(55),
+  @override
+  Widget build(BuildContext context) {
+    return CommonNavigation(
+      params: Routes.singer,
+      listChildren: ListView(
+        children: <Widget>[
+          Text('SingerPage',
+            style: TextStyle(
+              fontSize: screen.setSp(55),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-});
+        ],
+      ),
+    );
+  }
+}

@@ -1,22 +1,21 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music/router.dart';
-import 'package:flutter_music/path.dart' as Path;
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
-
-
+import 'package:flutter_music/route/application.dart';
+import 'package:flutter_music/route/route.dart';
 
 class TabNav extends StatelessWidget {
 
-  final Map params;
+  final String params;
   const TabNav({Key key, @required this.params}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final VoidCallback toRecommend = () => route.to(context, Path.Recommend, {});
-    final VoidCallback toSinger = () => route.to(context, Path.Singer, {});
-    final VoidCallback toRanking = () => route.to(context, Path.Ranking, {});
-    final VoidCallback toSearch = () => route.to(context, Path.Search, {});
+    final VoidCallback toRecommend = () => Application.router.navigateTo(context, Routes.recommend,transition: TransitionType.fadeIn);
+    final VoidCallback toSinger = () => Application.router.navigateTo(context, Routes.singer,transition: TransitionType.fadeIn);
+    final VoidCallback toRanking = () => Application.router.navigateTo(context, Routes.ranking,transition: TransitionType.fadeIn);
+    final VoidCallback toSearch = () => Application.router.navigateTo(context, Routes.search,transition: TransitionType.fadeIn);
 
 
     return Container(
@@ -47,10 +46,10 @@ class TabNav extends StatelessWidget {
   }
 
   Widget linkDetector(VoidCallback onTap,String name,int index){
-    int selectIndex = params['path'] == null ? 0 :
-                      params['path'] == Path.Recommend ? 0 : 
-                      params['path'] == Path.Singer ? 1 : 
-                      params['path'] == Path.Ranking ? 2 : 3;
+    int selectIndex = params == null ? 0 :
+                      params == Routes.recommend ? 0 : 
+                      params == Routes.singer ? 1 : 
+                      params == Routes.ranking ? 2 : 3;
     return RaisedButton(
       onPressed:(){
         if(index == selectIndex) return;

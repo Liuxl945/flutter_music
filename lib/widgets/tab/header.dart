@@ -1,11 +1,11 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
-import 'package:flutter_music/router.dart';
+import 'package:flutter_music/route/route.dart';
+import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/variable.dart' as config;
-import 'package:flutter_music/path.dart' as Path;
 
 class Header extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -20,7 +20,7 @@ class Header extends StatelessWidget {
           top: 0,
           child: GestureDetector(
             onTap:(){
-              route.to(context, Path.User, {});
+              Application.router.navigateTo(context, Routes.user,transition: TransitionType.fadeIn);
             },
             child: Container(
               height: screen.setHeight(88),
