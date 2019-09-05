@@ -7,8 +7,4 @@ const commonParams = {
   'format': 'json'
 };
 
-const options = {
-  'param': 'jsonpCallback'
-};
-
 const ERR_OK = 0;

@@ -1,13 +1,15 @@
 
+import 'dart:math';
 import 'package:flutter_music/api/config.dart' as config;
 import 'package:dio/dio.dart';
+
+
 const API_URL = 'localhost:8000';
 
 Dio dio = new Dio(); 
 
 class MusicApi {
-  static getRecomend() async{
-    print('开始获取数据------------------->');
+  static Future getRecomend() async{
     final url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg';
 
     final Map<String,dynamic> queryParameters = {
@@ -18,8 +20,33 @@ class MusicApi {
     queryParameters.addAll(config.commonParams);
     
     Response response = await dio.get(url,queryParameters:queryParameters);
+    return response.data;
+  }
 
-    print(response.data);
+  static Future getDiscList() async{
+
+    final url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg';
+
+    Options options = Options(headers: {
+      'referer': 'https://y.qq.com/portal/playlist.html',
+      'origin': 'https://y.qq.com'
+    });
+
+    final Map<String,dynamic> queryParameters = {
+      'platform': 'yqq.json',
+      'hostUin': 0,
+      'picmid': 1,
+      'rnd': Random(),
+      'loginUin': 0,
+      'hostUin': 0,
+      'needNewCode': 0,
+      'categoryId': 10000000,
+      'sortId': 5,
+      'sin': 0,
+      'ein': 29
+    };
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
     return response.data;
   }
 }

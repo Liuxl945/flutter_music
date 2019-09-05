@@ -1,5 +1,8 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
@@ -8,46 +11,61 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_music/route/route.dart';
 
-class RecommendPage extends StatelessWidget {
-  const RecommendPage({Key key}) : super(key: key);
 
+class RecommendPage extends StatefulWidget {
+  RecommendPage({Key key}) : super(key: key);
+  _RecommendPageState createState() => _RecommendPageState();
+}
+
+class _RecommendPageState extends State<RecommendPage> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(width: 750,height: 1334)..init(context);
-
     return CommonNavigation(
       params: Routes.recommend,
-      listChildren: listChildren(),
+      listChildren: listChildren(context),
     );
   }
-  Widget listChildren(){
+
+  // 轮播图+滑动列表
+  Widget listChildren(context){
     return ListView(
       children: <Widget>[
         swiperBanner(),
-        Text('recommend',
-          style: TextStyle(
-            fontSize: screen.setSp(55),
-          ),
-        ),
+        songList(),
       ],
     );
   }
-  Widget swiperBanner() {
-    final List photo = [
-      "https://img01.hua.com/uploadpic/newpic/9010011.jpg_220x240.jpg",
-      "https://img01.hua.com/uploadpic/newpic/9012345.jpg_220x240.jpg",
-      "https://img01.hua.com/uploadpic/newpic/9012413.jpg_220x240.jpg"
-    ];
 
+  // 轮播图组件
+  Widget swiperBanner() {
+    return FutureBuilder(
+      future: MusicApi.getRecomend(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData){
+          var data = json.decode(snapshot.data.toString());
+          List<Map> swiperList = (data['data']['slider'] as List).cast();
+          return swiperRender(swiperList);
+        }else{
+          return Container(
+            height: screen.setHeight(300),
+            child: Text('暂时没有轮播图数据'),
+          );
+        }
+      },
+    );
+  }
+
+  Widget swiperRender(swiperList){
     return Container(
       height: screen.setHeight(300),
       child: Swiper(
         itemBuilder: (BuildContext context, int index){
           return Hero(
-            tag: photo[index],
+            tag: swiperList[index]['picUrl'],
             child: FadeInImage.memoryNetwork(
               placeholder:kTransparentImage,
-              image: photo[index],
+              image: swiperList[index]['picUrl'],
               fit: BoxFit.cover,
             ),
           );
@@ -55,12 +73,93 @@ class RecommendPage extends StatelessWidget {
         onTap: (index){
           print(index);
         },
-
         loop: true,
         autoplay: true,
-        itemCount: photo.length,
+        itemCount: swiperList.length,
         pagination: SwiperPagination(),
       ),
+    );
+  }
+
+
+  // 歌曲列表
+  Widget songList(){
+    return Column(
+      children: <Widget>[
+        Container(
+          height: screen.setHeight(130),
+          child: Center(
+            child: Text('热门歌曲推荐',
+              style: TextStyle(
+                color: config.PrimaryColor,
+                fontSize: screen.setSp(30),
+              ),
+            ),
+          ),
+        ),
+        getSongData(),
+      ],
+    );
+  }
+
+  Widget getSongData(){
+    return FutureBuilder(
+      future: MusicApi.getDiscList(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData){
+          var data = json.decode(snapshot.data.toString());
+          
+          List<Map> songList = (data['data']['list'] as List).cast();
+          
+          print('开始过去数据-------------》');
+          print(songList);
+          return songItems(songList);
+        }else{
+          return Container(
+            child: Text('暂时没有轮播图数据'),
+          );
+        }
+      },
+    );
+  }
+
+  Widget songItems(songList){
+    return ListView.builder(
+      itemCount: songList.lenth,
+      itemBuilder: (BuildContext context, int index) {
+        // return songItem(songList[index]);
+        return Text('$index');
+      },
+    );
+  }
+
+  // 单个歌曲
+  Widget songItem(song){
+    return Flex(
+      direction:Axis.horizontal,
+      children: <Widget>[
+        Image.network(song['imgurl'],
+          fit:BoxFit.cover,
+          width: screen.setHeight(120),
+          height: screen.setWidth(120),
+        ),
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: EdgeInsets.only(left: screen.setWidth(40)),
+            child: Column(
+              children: <Widget>[
+                Text(song['creator']['name'] ?? '',style:TextStyle(
+                  color: Colors.white,
+                )),
+                Text(song['dissname'] ?? '',style:TextStyle(
+                  color: config.PrimaryFontColor,
+                ))
+              ],
+            ),
+          )
+        ),
+      ],
     );
   }
 

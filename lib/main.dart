@@ -16,12 +16,10 @@ class RunApp extends StatelessWidget {
     Application.router = router;
 
     return MaterialApp(
-      title: 'App',
+      title: 'Chicken Music',
       theme: ThemeData(
-        primaryColor: config.BaseColor,
-        dividerColor: config.BaseColor,
-        backgroundColor:config.BaseColor,
-        dialogBackgroundColor:config.BaseColor,
+        scaffoldBackgroundColor:config.BaseColor,
+        // brightness: Brightness.dark,
       ),
       initialRoute: Routes.recommend,
       onGenerateRoute: router.generator,
