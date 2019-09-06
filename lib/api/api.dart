@@ -79,6 +79,23 @@ class MusicApi {
     return response.data;
   }
 
-  
+  static Future getSingerList() async{
+    final url = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg';
+
+    final Map<String,dynamic> queryParameters = {
+      'channel': 'singer',
+      'page': 'list',
+      'key': 'all_all_all',
+      'pagesize': 100,
+      'pagenum': 1,
+      'hostUin': 0,
+      'needNewCode': 0,
+      'platform': 'yqq'
+    };
+
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters);
+    return response.data;
+  }
 
 }
