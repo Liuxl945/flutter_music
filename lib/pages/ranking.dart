@@ -8,8 +8,22 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_music/api/api.dart';
 
-class RankingPage extends StatelessWidget {
-  const RankingPage({Key key}) : super(key: key);
+
+class RankingPage extends StatefulWidget {
+  RankingPage({Key key}) : super(key: key);
+
+  _RankingPageState createState() => _RankingPageState();
+}
+
+class _RankingPageState extends State<RankingPage> {
+
+  var _getTopList;
+
+  @override
+  void initState() {
+    super.initState();
+    _getTopList = MusicApi.getTopList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +35,7 @@ class RankingPage extends StatelessWidget {
 
   Widget listChildren(){
     return FutureBuilder(
-      future: MusicApi.getTopList(),
+      future: _getTopList,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           var data = json.decode(snapshot.data.toString());
@@ -116,5 +130,4 @@ class RankingPage extends StatelessWidget {
       ),
     );
   }
-
 }

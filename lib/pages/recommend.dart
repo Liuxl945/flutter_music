@@ -18,6 +18,17 @@ class RecommendPage extends StatefulWidget {
 }
 
 class _RecommendPageState extends State<RecommendPage> {
+
+  var _getRecomend;
+  var _getDiscList;
+
+  @override
+  void initState() {
+    super.initState();
+    _getRecomend = MusicApi.getRecomend();
+    _getDiscList = MusicApi.getDiscList();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(width: 750,height: 1334)..init(context);
@@ -40,7 +51,7 @@ class _RecommendPageState extends State<RecommendPage> {
   // 轮播图组件
   Widget swiperBanner() {
     return FutureBuilder(
-      future: MusicApi.getRecomend(),
+      future: _getRecomend,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           var data = json.decode(snapshot.data.toString());
@@ -106,7 +117,7 @@ class _RecommendPageState extends State<RecommendPage> {
 
   Widget getSongData(){
     return FutureBuilder(
-      future: MusicApi.getDiscList(),
+      future: _getDiscList,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           var data = json.decode(snapshot.data.toString());

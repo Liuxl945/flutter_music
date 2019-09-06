@@ -19,10 +19,13 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController ctl;
   String searchKey = '';
 
+  var _getHotKey;
+
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     ctl = TextEditingController();
+    _getHotKey = MusicApi.getHotKey();
   }
 
   @override
@@ -99,12 +102,11 @@ class _SearchPageState extends State<SearchPage> {
   // 热门搜索关键词-搜索历史滑动列表
   Widget hotSearch(){
     return FutureBuilder(
-      future: MusicApi.getHotKey(),
+      future: _getHotKey,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           var data = json.decode(snapshot.data.toString());
           List<Map> hotkeyList = (data['data']['hotkey'] as List).cast();
-          print(hotkeyList);
           return ListView(
             children: <Widget>[
               hotkeyTitle(),
@@ -145,7 +147,6 @@ class _SearchPageState extends State<SearchPage> {
 
     List<Widget> hotList = [];
     final int number = hotkeyList.length > 10 ? 10 : hotkeyList.length;
-
     for(var index = 0;index < number;index++){
       hotList.add(
         serchBtn(hotkeyList[index])
