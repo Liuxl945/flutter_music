@@ -176,26 +176,20 @@ class _RecommendPageState extends State<RecommendPage> {
         padding: EdgeInsets.only(left: screen.setWidth(40)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(song['creator']['name'] ?? '',style:TextStyle(
-                color: Colors.white,
-                fontSize: screen.setSp(28),
-              )),
-            ),
+            Text(song['creator']['name'] ?? '',style:TextStyle(
+              color: Colors.white,
+              fontSize: screen.setSp(28),
+            )),
             SizedBox(height: screen.setHeight(26)),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(song['dissname'] ?? '',style:TextStyle(
-                color: config.PrimaryFontColor,
-                fontSize: screen.setSp(24),
-              )),
-            ),
+            Text(song['dissname'] ?? '',style:TextStyle(
+              color: config.PrimaryFontColor,
+              fontSize: screen.setSp(24),
+            )),
           ],
         ),
-      )
+      ),
     );
   }
 

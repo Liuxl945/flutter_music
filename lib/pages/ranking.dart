@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/route/route.dart';
@@ -46,7 +45,7 @@ class RankingPage extends StatelessWidget {
     );
   }
 
-
+  // 排行列表
   Widget rankingList(rank,isLast){
     return GestureDetector(
       onTap: (){
@@ -54,7 +53,7 @@ class RankingPage extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(40), screen.setWidth(40), isLast ? screen.setWidth(40): 0),
-        color: Color.fromARGB(51, 51, 51, 1),
+        color: config.BaseLightColor,
         child: Flex(
           direction:Axis.horizontal,
           children: <Widget>[
@@ -68,6 +67,7 @@ class RankingPage extends StatelessWidget {
     );
   }
 
+  // 左边图片
   Widget leftImage(rank){
     return FadeInImage.memoryNetwork(
       placeholder:kTransparentImage,
@@ -78,6 +78,7 @@ class RankingPage extends StatelessWidget {
     );
   }
 
+  // 右边文字
   Widget rightTitle(rank){
     int index = 1;
     List<Widget> list= [];
@@ -98,22 +99,20 @@ class RankingPage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: screen.setHeight(30)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: list
       ),
     );
   }
 
   Widget fontStyle(title){
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style:TextStyle(
-          color: config.LightFontColor,
-          fontSize: screen.setSp(24),
-        ),
+    return Text(
+      title,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style:TextStyle(
+        color: config.LightFontColor,
+        fontSize: screen.setSp(24),
       ),
     );
   }

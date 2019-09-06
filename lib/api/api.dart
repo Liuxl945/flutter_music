@@ -66,4 +66,18 @@ class MusicApi {
     Response response = await dio.get(url,queryParameters:queryParameters,options: options);
     return response.data;
   }
+
+  static Future getHotKey() async{
+    final url = 'https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg';
+
+    final Map<String,dynamic> queryParameters = {
+      'platform': 'h5',
+      'uin': 0,
+      'needNewCode': 1,
+    };
+    queryParameters.addAll(config.commonParams);
+    
+    Response response = await dio.get(url,queryParameters:queryParameters);
+    return response.data;
+  }
 }

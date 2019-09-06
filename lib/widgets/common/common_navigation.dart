@@ -13,6 +13,7 @@ class CommonNavigation extends StatelessWidget {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Header(),
             TabNav(params:params),
