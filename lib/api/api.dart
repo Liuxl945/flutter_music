@@ -18,7 +18,6 @@ class MusicApi {
       'needNewCode': 1,
     };
     queryParameters.addAll(config.commonParams);
-    
     Response response = await dio.get(url,queryParameters:queryParameters);
     return response.data;
   }
@@ -76,8 +75,10 @@ class MusicApi {
       'needNewCode': 1,
     };
     queryParameters.addAll(config.commonParams);
-    
     Response response = await dio.get(url,queryParameters:queryParameters);
     return response.data;
   }
+
+  
+
 }
