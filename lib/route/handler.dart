@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter_music/pages/banner_detail.dart';
 import 'package:flutter_music/pages/ranking.dart';
+import 'package:flutter_music/pages/ranking_detail.dart';
 import 'package:flutter_music/pages/recommend.dart';
+import 'package:flutter_music/pages/recommend_detail.dart';
 import 'package:flutter_music/pages/search.dart';
 import 'package:flutter_music/pages/singer.dart';
+import 'package:flutter_music/pages/singer_detail.dart';
 import 'package:flutter_music/pages/user.dart';
 
 final route = Router();
@@ -35,5 +39,37 @@ Handler singerHandler = Handler(
 Handler userHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
     return UserPage();
+  }
+);
+
+Handler bannerDetailHandler = Handler(
+  handlerFunc: (BuildContext context,Map<String,dynamic> params){
+    print(params);
+    final url = params['url'] != null ? params['url'].first: 'https://yingliyingli.com';
+    return BannerDetail(url:url);
+  }
+);
+
+Handler recommendDetailHandler = Handler(
+  handlerFunc: (BuildContext context,Map<String,dynamic> params){
+    print(params);
+    
+    return RecommendDetail();
+  }
+);
+
+Handler rankingDetailHandler = Handler(
+  handlerFunc: (BuildContext context,Map<String,dynamic> params){
+    print(params);
+    
+    return RankingDetail();
+  }
+);
+
+Handler singerDetailHandler = Handler(
+  handlerFunc: (BuildContext context,Map<String,dynamic> params){
+    print(params);
+    
+    return SingerDetail();
   }
 );

@@ -25,16 +25,24 @@ class _SingerPageState extends State<SingerPage> {
   int defaultIndex = 0;
   final double suspensionHeight = screen.setHeight(60);
   final double itemHeight = screen.setHeight(140);
-
+  double opacity = 1; //IOS下下滑隐藏标题
+  
   @override
   void initState() {
     scrollController.addListener((){
       double position = scrollController.offset.toDouble();
+      final newOpacity = position <= 0 ? 0 : 1;
+      
       int index = _computerIndex(position);
       
       if(index != defaultIndex){
         setState(() {
           defaultIndex = index;
+        });
+      }
+      if(newOpacity != opacity){
+        setState(() {
+          opacity = newOpacity.toDouble();
         });
       }
     });
@@ -199,7 +207,11 @@ class _SingerPageState extends State<SingerPage> {
          controller:scrollController,
         ),
 
-        singerTitle(singerData.length > 0 ? singerData[defaultIndex]['title'] : hotName),
+        Opacity(
+          opacity: opacity,
+          child: singerTitle(singerData.length > 0 ? singerData[defaultIndex]['title'] : hotName),
+        )
+        
       ],
     );
   }

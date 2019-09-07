@@ -29,6 +29,7 @@ dependencies:
   transparent_image: ^1.0.0
   dio: ^2.1.16
   fluro: "^1.5.1"
+  flutter_webview_plugin: ^0.3.7
 
 dev_dependencies:
   flutter_test:

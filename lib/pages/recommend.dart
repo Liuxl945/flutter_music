@@ -1,8 +1,10 @@
 
 import 'dart:convert';
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
+import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
@@ -84,7 +86,10 @@ class _RecommendPageState extends State<RecommendPage> {
           );
         },
         onTap: (index){
-          print(index);
+          final url = swiperList[index]['linkUrl'];
+          final newUrl = Uri.encodeComponent(url);
+          print(newUrl);
+          Application.router.navigateTo(context, 'Routes.bannerDetail', transition: TransitionType.fadeIn);
         },
         loop: true,
         autoplay: true,
