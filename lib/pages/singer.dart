@@ -8,6 +8,7 @@ import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_music/variable.dart' as config;
 
+typedef void OnTouchCallback(int index);
 
 class SingerPage extends StatefulWidget {
   SingerPage({Key key}) : super(key: key);
@@ -17,31 +18,74 @@ class SingerPage extends StatefulWidget {
 
 class _SingerPageState extends State<SingerPage> {
 
-  List<Map> singerData = [];
-  final HOT_NAME = "热门";
-  final HOT_SINGER_LENGTH = 20;
+  ScrollController scrollController = new ScrollController();
+  List<dynamic> singerData = [];
+  final hotName = "热门";
+  final hotSingerLength = 20; //热门歌手长度
+  int defaultIndex = 0;
+  final double suspensionHeight = screen.setHeight(60);
+  final double itemHeight = screen.setHeight(140);
 
   @override
   void initState() {
+    scrollController.addListener((){
+      double position = scrollController.offset.toDouble();
+      int index = _computerIndex(position);
+      
+      if(index != defaultIndex){
+        setState(() {
+          defaultIndex = index;
+        });
+      }
+    });
     MusicApi.getSingerList().then((val){
       var data = json.decode(val.toString());
       List<Map> singerList = (data['data']['list'] as List).cast();
 
       setState(() {
-        singerData = singerList;
+        singerData = _nomallizeSinger(singerList);
       });
-
-      final nomallizeSinger = _nomallizeSinger(singerData);
-      print(nomallizeSinger);
 
     });
     super.initState();
   }
 
+  @override
+  void dispose() { 
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  int _computerIndex(double position){
+    if(singerData.length > 0){
+      final index = defaultIndex > 1 ? defaultIndex- 1 : 0; //加载到后面的元素会循环很多次---优化后最多循环2次
+
+      for (int i = index; i < singerData.length; i++) {
+        double pre = _computerIndexPosition(i);
+        double next = _computerIndexPosition(i + 1);
+        if (position > pre && position < next) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  }
+
+  double _computerIndexPosition(int index){
+    int n = 0;
+    if(singerData.length > 0){
+      for (int i = 0; i < index; i++) {
+        n += (singerData[i]['items'].length).toInt();
+      }
+    }
+    return n * itemHeight + (index) * (suspensionHeight + screen.setHeight(40));
+  }
+
+
   List _nomallizeSinger(List list){
     Map map = {
       'hot':{
-        'title':HOT_NAME,
+        'title':hotName,
         'items':[]
       }
     };
@@ -49,12 +93,12 @@ class _SingerPageState extends State<SingerPage> {
     for (var index = 0; index < list.length; index++) {
       final item = list[index];
 
-      if(index < HOT_SINGER_LENGTH){
+      if(index < hotSingerLength){
         map['hot']['items'].add(
-          {
+          singer({
             'id':item['Fsinger_mid'],
             'name':item['Fsinger_name'],
-          }
+          })
         );
       }
 
@@ -68,10 +112,10 @@ class _SingerPageState extends State<SingerPage> {
       }
 
       map[key]['items'].add(
-        {
+        singer({
           'id':item['Fsinger_mid'],
           'name':item['Fsinger_name'],
-        }
+        })
       );
     }
 
@@ -83,7 +127,7 @@ class _SingerPageState extends State<SingerPage> {
       final title = val['title'];
       if(RegExp('[a-zA-Z]').hasMatch(title)){
         ret.add(val);
-      }else if(val['title'] == HOT_NAME){
+      }else if(val['title'] == hotName){
         hot.add(val);
       }
     });
@@ -95,6 +139,7 @@ class _SingerPageState extends State<SingerPage> {
     return hot..addAll(ret);
   }
 
+  // 歌手信息数据
   Map<String,dynamic> singer(Map detals){
     return {
       'id':detals['id'],
@@ -103,35 +148,184 @@ class _SingerPageState extends State<SingerPage> {
     };
   }
 
+  void _onTouchCallback(int index){
+    double position = _computerIndexPosition(index).clamp(.0, scrollController.position.maxScrollExtent);
+    scrollController.jumpTo(position);
+    setState((){
+      defaultIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return CommonNavigation(
       params: Routes.singer,
-      listChildren: listChildren(),
+      listChildren: Stack(
+        children: <Widget>[
+          singerList(),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: screen.setWidth(40),
+              alignment: Alignment.center,
+              child: IndexBar(
+                data:singerData,
+                defaultIndex:defaultIndex,
+                onTouchCallback:_onTouchCallback,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  // 整体布局
-  Widget listChildren(){
+  // 歌手列表
+  Widget singerList(){
     return Stack(
       children: <Widget>[
-        singerList(),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            width: screen.setWidth(40),
-            alignment: Alignment.center,
-            child: indexBar(),
-          ),
+
+        ListView.builder(
+          itemCount: singerData.length,
+          itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: <Widget>[
+              singerTitle(singerData[index]['title']),
+              SizedBox(height: screen.setHeight(40)),
+              singerListItem(singerData[index]['items']),
+            ],
+          );
+         },
+         controller:scrollController,
         ),
+
+        singerTitle(singerData.length > 0 ? singerData[defaultIndex]['title'] : hotName),
       ],
     );
   }
 
-  // 右边滑动列表
-  Widget indexBar(){
+  // A-B-C-D标题
+  Widget singerTitle(name){
+    return Container(
+      width: screen.setWidth(750),
+      height: screen.setHeight(60),
+      color: config.BaseLightColor,
+      padding: EdgeInsets.only(left: screen.setWidth(40)),
+      alignment: Alignment.centerLeft,
+      child: Text(name,
+        style: TextStyle(
+          color: config.PrimaryFontColor,
+          fontSize: screen.setSp(24),
+        ),
+      ),
+    );
+  }
+
+  Widget singerListItem(List<dynamic> items){
+    List<Widget> list = [];
+    items.forEach((item){
+      list.add(
+        singerItem(item)
+      );
+    });
+    return Column(
+      children: list,
+    );
+  }
+
+  // 歌手单个样式
+  Widget singerItem(singer){
+    return Container(
+      padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setHeight(40)),
+      child: Row(
+        children: <Widget>[
+          singerAvatar(singer),
+          Expanded(
+            child: singerName(singer),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 歌手头像
+  Widget singerAvatar(singer){
+    return ClipOval(
+      child: Container(
+        child: FadeInImage.memoryNetwork(
+          placeholder:kTransparentImage,
+          image: singer['avatar'] ?? 'https://y.gtimg.cn/music/photo_new/T001R150x150M000002J4UUk29y8BY.jpg?max_age=2592000',
+          fit: BoxFit.cover,
+        ),
+        height: screen.setHeight(100),
+        width: screen.setWidth(100),
+      ),
+    );
+  }
+
+  // 歌手姓名
+  Widget singerName(singer){
+    return Container(
+      padding: EdgeInsets.only(left: screen.setWidth(40)),
+      child: Text(singer['name'],
+        style: TextStyle(
+          fontSize: screen.setSp(28),
+          color: config.PrimaryFontColor,
+        ),
+      ),
+    );
+  }
+}
+
+class IndexBar extends StatefulWidget {
+  final List<dynamic> data;
+  final OnTouchCallback onTouchCallback;
+  final defaultIndex;
+  IndexBar({Key key,@required this.data, @required this.onTouchCallback, @required this.defaultIndex}) : super(key: key);
+
+  _IndexBarState createState() => _IndexBarState();
+}
+
+class _IndexBarState extends State<IndexBar> {
+  List<Widget> children = [];
+  void _createWidget(){
+    children.clear();
+
+    for (var i = 0; i < widget.data.length; i++) {
+      final items = widget.data[i];
+      children.add(
+        barText('${items['title']}',i)
+      );
+    }
+  }
+
+  void _triggerTouch(int index) {
+    if (widget.onTouchCallback != null) {
+      widget.onTouchCallback(index);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _createWidget();
+
     return GestureDetector(
+      onVerticalDragDown: (DragDownDetails details){
+        int offset = details.globalPosition.dy.toInt();
+        RenderBox rb = context.findRenderObject();
+        int top = rb.localToGlobal(Offset.zero).dy.toInt();
+
+        double offsetTop = offset - top - screen.setHeight(20);//减去上部padding的高度
+        _triggerTouch((offsetTop / screen.setHeight(40)).floor());
+      },
+      onVerticalDragUpdate:(DragUpdateDetails details) {
+        int offset = details.globalPosition.dy.toInt();
+        RenderBox rb = context.findRenderObject();
+        int top = rb.localToGlobal(Offset.zero).dy.toInt();
+        double offsetTop = offset - top - screen.setHeight(20);//减去上部padding的高度
+        int index = (offsetTop / screen.setHeight(40)).floor() <=0 ? 0: (offsetTop / screen.setHeight(40)).floor();
+        _triggerTouch(index.clamp(.0, children.length - 1));
+      },
       child: Container(
         width: screen.setWidth(40),
         padding: EdgeInsets.symmetric(vertical: screen.setHeight(20)),
@@ -143,130 +337,22 @@ class _SingerPageState extends State<SingerPage> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            barText('1'),
-            barText('2'),
-            barText('3'),
-            barText('4'),
-            barText('5'),
-            barText('6'),
-            barText('7'),
-            barText('8'),
-            barText('9'),
-            barText('10'),
-            barText('11'),
-          ],
+          children: children,
         ),
       ),
     );
   }
-
-  Widget barText(index){
+  Widget barText(String name,int index){
     return Container(
-      padding: EdgeInsets.symmetric(vertical: screen.setHeight(6)),
+      height: screen.setHeight(40),
       alignment: Alignment.center,
       child: Text(
-        index,
+        name.substring(0,1),
         style: TextStyle(
-          color: config.PrimaryFontColor,
+          color: index == widget.defaultIndex ? config.PrimaryColor : config.PrimaryFontColor,
           fontSize: screen.setSp(24),
         ),
       ),
     );
   }
-
-
-  // 歌手列表
-  Widget singerList(){
-    return Stack(
-      children: <Widget>[
-        ListView(
-          children: <Widget>[
-            SizedBox(height: screen.setHeight(100)),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerTitle(),
-            SizedBox(height: screen.setHeight(40)),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-            singerItem(),
-          ],
-        ),
-        singerTitle(),
-      ],
-    );
-  }
-
-  Widget singerTitle(){
-    return Container(
-      width: screen.setWidth(750),
-      height: screen.setHeight(60),
-      color: config.BaseLightColor,
-      padding: EdgeInsets.only(left: screen.setWidth(40)),
-      alignment: Alignment.centerLeft,
-      child: Text('header',
-        style: TextStyle(
-          color: config.PrimaryFontColor,
-          fontSize: screen.setSp(24),
-        ),
-      ),
-    );
-  }
-
-  // 歌手单个样式
-  Widget singerItem(){
-    return Container(
-      padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setHeight(40)),
-      child: Row(
-        children: <Widget>[
-          singerAvatar(),
-          Expanded(
-            child: singerName(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 歌手头像
-  Widget singerAvatar(){
-    return ClipOval(
-      child: Container(
-        child: FadeInImage.memoryNetwork(
-          placeholder:kTransparentImage,
-          image: 'https://y.gtimg.cn/music/photo_new/T001R150x150M000002J4UUk29y8BY.jpg?max_age=2592000',
-          fit: BoxFit.cover,
-        ),
-        height: screen.setHeight(100),
-        width: screen.setWidth(100),
-      ),
-    );
-  }
-
-  // 歌手姓名
-  Widget singerName(){
-    return Container(
-      padding: EdgeInsets.only(left: screen.setWidth(40)),
-      child: Text('薛之谦',
-        style: TextStyle(
-          fontSize: screen.setSp(28),
-          color: config.PrimaryFontColor,
-        ),
-      ),
-    );
-  }
-
 }
