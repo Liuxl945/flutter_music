@@ -18,7 +18,7 @@ class SingerPage extends StatefulWidget {
 
 class _SingerPageState extends State<SingerPage> {
 
-  ScrollController scrollController = new ScrollController();
+  ScrollController scrollController = ScrollController();
   List<dynamic> singerData = [];
   final hotName = "热门";
   final hotSingerLength = 20; //热门歌手长度

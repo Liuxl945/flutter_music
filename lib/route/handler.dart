@@ -44,7 +44,6 @@ Handler userHandler = Handler(
 
 Handler bannerDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    print(params);
     final url = params['url'] != null ? params['url'].first: 'https://yingliyingli.com';
     return BannerDetail(url:url);
   }
@@ -52,15 +51,13 @@ Handler bannerDetailHandler = Handler(
 
 Handler recommendDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    print(params);
-    
-    return RecommendDetail();
+    final id = params['id']?.first;
+    return RecommendDetail(id:id);
   }
 );
 
 Handler rankingDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    print(params);
     
     return RankingDetail();
   }
@@ -68,7 +65,6 @@ Handler rankingDetailHandler = Handler(
 
 Handler singerDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    print(params);
     
     return SingerDetail();
   }

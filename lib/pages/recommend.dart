@@ -156,6 +156,7 @@ class _RecommendPageState extends State<RecommendPage> {
   Widget songItem(song){
     return GestureDetector(
       onTap: (){
+        Application.router.navigateTo(context, '${Routes.recommendDetail}?id=${song['dissid']}',transition: TransitionType.fadeIn);
         print(song);
       },
       child: Container(

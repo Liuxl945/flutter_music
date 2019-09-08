@@ -21,7 +21,7 @@ class RunApp extends StatelessWidget {
         scaffoldBackgroundColor:config.BaseColor,
         // brightness: Brightness.dark,
       ),
-      initialRoute: Routes.recommend,
+      initialRoute: Routes.recommendDetail,
       onGenerateRoute: router.generator,
     );
   }
