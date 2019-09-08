@@ -56,8 +56,10 @@ class _RecommendPageState extends State<RecommendPage> {
       future: _getRecomend,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
-          var data = json.decode(snapshot.data.toString());
+          var data = json.decode((snapshot.data).toString());
+          print(data);
           List<Map> swiperList = (data['data']['slider'] as List).cast();
+          print(swiperList);
           return swiperRender(swiperList);
         }else{
           return Container(

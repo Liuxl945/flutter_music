@@ -65,7 +65,7 @@ Handler rankingDetailHandler = Handler(
 
 Handler singerDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    
-    return SingerDetail();
+    final id = params['id']?.first;
+    return SingerDetail(id:id);
   }
 );

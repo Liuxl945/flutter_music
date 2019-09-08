@@ -98,4 +98,47 @@ class MusicApi {
     return response.data;
   }
 
+  static Future getDisstList(disstid) async{
+    final url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg';
+    Options options = Options(headers: {
+      'referer': 'https://y.qq.com/n/yqq/playlist',
+      'origin': 'https://y.qq.com'
+    });
+
+    final Map<String,dynamic> queryParameters = {
+      'disstid':disstid,
+      'type': 1,
+      'json': 1,
+      'utf8': 1,
+      'onlysong': 0,
+      'platform': 'yqq.json',
+      'loginUin': 0,
+      'hostUin': 0,
+      'needNewCode': 0
+    };
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
+    return response.data;
+
+  }
+
+  static Future getSingerDetail(singerId) async{
+    final url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg';
+    final Map<String,dynamic> queryParameters = {
+      'loginUin': 0,
+      'format': 'json',
+      'platform': 'yqq.json',
+      'needNewCode': 0,
+      'order': 'listen',
+      'begin': 0,
+      'num': 100,
+      'songstatus': 1,
+      'singermid': singerId
+    };
+
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters);
+    return response.data;
+  }
+
 }
