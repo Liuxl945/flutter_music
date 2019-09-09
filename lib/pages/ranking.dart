@@ -65,7 +65,7 @@ class _RankingPageState extends State<RankingPage> {
   Widget rankingList(rank,isLast){
     return GestureDetector(
       onTap: (){
-        Application.router.navigateTo(context, Routes.rankingDetail, transition: TransitionType.fadeIn);
+        Application.router.navigateTo(context, '${Routes.rankingDetail}?id=${rank['id']}', transition: TransitionType.fadeIn);
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(40), screen.setWidth(40), isLast ? screen.setWidth(40): 0),

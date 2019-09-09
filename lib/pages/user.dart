@@ -14,7 +14,7 @@ class UserPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: screen.setSp(55),
               ),
-            )
+            ),
           ],
         ),
       ),

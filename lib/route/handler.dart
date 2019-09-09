@@ -57,8 +57,8 @@ Handler recommendDetailHandler = Handler(
 
 Handler rankingDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    
-    return RankingDetail();
+    final id = params['id']?.first;
+    return RankingDetail(id:id);
   }
 );
 

@@ -7,8 +7,9 @@ class MusicList extends StatefulWidget {
   final List songs;
   final String bgImage;
   final String title;
+  final bool rank;
 
-  MusicList({Key key,@required this.songs,@required this.bgImage,@required this.title}) : super(key: key);
+  MusicList({Key key,@required this.songs,@required this.bgImage,@required this.title,this.rank = false}) : super(key: key);
 
   _MusicListState createState() => _MusicListState();
 }
@@ -18,6 +19,7 @@ class _MusicListState extends State<MusicList> {
   double imageHeight = screen.setHeight(525);
   double appbarHeight = screen.setHeight(88);
   bool opacity = false; 
+  
   
   @override
   void initState() {
@@ -47,7 +49,7 @@ class _MusicListState extends State<MusicList> {
   Widget build(BuildContext context) {
     final screeHeight = MediaQuery.of(context).size.height; //屏幕高度
     final screeTop = MediaQuery.of(context).padding.top; //安全区域高度
-    
+
     return Stack(
       children: <Widget>[
         Container(
@@ -70,7 +72,7 @@ class _MusicListState extends State<MusicList> {
             playBtn(),
           ],
         ),
-        SongList(songs:widget.songs),
+        SongList(songs:widget.songs,rank: widget.rank,),
       ],
     );
   }

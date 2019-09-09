@@ -24,7 +24,7 @@ class _SingerDetailState extends State<SingerDetail> {
 
   @override
   void initState() {
-    _getSingerDetail = MusicApi.getSingerDetail(widget.id ?? '0025NhlN2yWrP4');
+    _getSingerDetail = MusicApi.getSingerDetail(widget.id);
 
     super.initState();
   }
@@ -62,8 +62,6 @@ class _SingerDetailState extends State<SingerDetail> {
                 Map<String,dynamic> cdlistList = (data['data'] as Map).cast();
 
                 final singer = Provide.value<Singer>(context).singer;
-                print('--------------------------------------->');
-                print(singer);
 
                 final String bgImage = singer['avatar'];
                 final String title = singer['name'];

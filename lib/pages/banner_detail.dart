@@ -16,7 +16,6 @@ class _BannerDetailState extends State<BannerDetail> {
   Widget build(BuildContext context) {
     
     final url = Provide.value<BannerUrl>(context).url;
-    print(url);
 
     return SafeArea(
       child: WebviewScaffold(

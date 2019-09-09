@@ -8,7 +8,7 @@ import 'package:flutter_music/utils/song.dart';
 
 class RecommendDetail extends StatefulWidget {
   final id;
-  RecommendDetail({Key key,this.id}) : super(key: key);
+  RecommendDetail({Key key,@required this.id}) : super(key: key);
   _RecommendDetailState createState() => _RecommendDetailState();
 }
 
@@ -19,7 +19,7 @@ class _RecommendDetailState extends State<RecommendDetail> {
 
   @override
   void initState() {
-    _getDisstList = MusicApi.getDisstList(widget.id ?? '7167379625');
+    _getDisstList = MusicApi.getDisstList(widget.id);
 
     super.initState();
   }

@@ -174,8 +174,6 @@ class _RecommendPageState extends State<RecommendPage> {
         ),
       ),
     );
-    
-    
   }
 
   Widget leftImage(song){

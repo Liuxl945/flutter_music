@@ -7,7 +7,7 @@ import 'package:flutter_music/utils/song.dart';
 import 'package:flutter_music/widgets/music/music_list.dart';
 class RankingDetail extends StatefulWidget {
   final id;
-  RankingDetail({Key key,this.id}) : super(key: key);
+  RankingDetail({Key key,@required this.id}) : super(key: key);
 
   _RankingDetailState createState() => _RankingDetailState();
 }
@@ -19,7 +19,7 @@ class _RankingDetailState extends State<RankingDetail> {
 
   @override
   void initState() {
-    _getMusicList = MusicApi.getMusicList(widget.id ?? '4');
+    _getMusicList = MusicApi.getMusicList(widget.id);
 
     super.initState();
   }
@@ -60,9 +60,8 @@ class _RankingDetailState extends State<RankingDetail> {
 
                 final String bgImage = songs[0]['image'];
                 final String title = songdetail['ListName'];
-                
 
-                return MusicList(songs:songs,bgImage:bgImage,title:title);
+                return MusicList(songs:songs,bgImage:bgImage,title:title,rank: true);
               }else{
                 return Container(
                   height: screeHeight - screeTop,

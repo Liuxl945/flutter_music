@@ -31,6 +31,7 @@ dependencies:
   fluro: "^1.5.1"
   flutter_webview_plugin: ^0.3.7
   provide: ^1.0.2
+  pull_to_refresh: ^1.5.4
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +52,9 @@ flutter:
   assets:
     - assets/image/default.png
     - assets/image/logo3x.png
+    - assets/image/first3x.png
+    - assets/image/second3x.png
+    - assets/image/third3x.png
     - assets/svg/fuchouzhelianmeng-lieying.svg
     - assets/svg/hanweizhelianmeng-yemoxia.svg
     - assets/svg/qiyiboshi.svg
