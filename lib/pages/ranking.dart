@@ -1,7 +1,9 @@
 
 import 'dart:convert';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -63,7 +65,7 @@ class _RankingPageState extends State<RankingPage> {
   Widget rankingList(rank,isLast){
     return GestureDetector(
       onTap: (){
-        print(rank);
+        Application.router.navigateTo(context, Routes.rankingDetail, transition: TransitionType.fadeIn);
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(40), screen.setWidth(40), isLast ? screen.setWidth(40): 0),

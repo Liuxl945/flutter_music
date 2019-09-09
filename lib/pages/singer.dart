@@ -1,12 +1,17 @@
 
 import 'dart:convert';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/provide/singer.dart';
+import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:provide/provide.dart';
+
 
 typedef void OnTouchCallback(int index);
 
@@ -247,15 +252,22 @@ class _SingerPageState extends State<SingerPage> {
 
   // 歌手单个样式
   Widget singerItem(singer){
-    return Container(
-      padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setHeight(40)),
-      child: Row(
-        children: <Widget>[
-          singerAvatar(singer),
-          Expanded(
-            child: singerName(singer),
-          ),
-        ],
+    return GestureDetector(
+      onTap: (){
+        Provide.value<Singer>(context).setSinger(singer);
+
+        Application.router.navigateTo(context, '${Routes.singerDetail}?id=${singer['id']}',transition: TransitionType.fadeIn);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setHeight(40)),
+        child: Row(
+          children: <Widget>[
+            singerAvatar(singer),
+            Expanded(
+              child: singerName(singer),
+            ),
+          ],
+        ),
       ),
     );
   }

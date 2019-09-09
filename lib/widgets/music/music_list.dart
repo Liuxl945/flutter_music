@@ -86,9 +86,14 @@ class _MusicListState extends State<MusicList> {
         color: opacity ? config.BaseColor : Colors.transparent,
         child: Row(
           children: <Widget>[
-            Container(
-              width: appbarHeight,
-              child: Icon(Icons.arrow_back_ios,size: 36,color: config.PrimaryColor),
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                width: appbarHeight,
+                child: Icon(Icons.arrow_back_ios,size: 36,color: config.PrimaryColor),
+              ),
             ),
             Expanded(
               child:Container(

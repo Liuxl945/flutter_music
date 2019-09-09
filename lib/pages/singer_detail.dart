@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/provide/singer.dart';
 import 'package:flutter_music/utils/song.dart';
 import 'package:flutter_music/widgets/music/music_list.dart';
+import 'package:provide/provide.dart';
 
 
 class SingerDetail extends StatefulWidget {
@@ -59,8 +61,12 @@ class _SingerDetailState extends State<SingerDetail> {
 
                 Map<String,dynamic> cdlistList = (data['data'] as Map).cast();
 
-                final String bgImage = cdlistList['logo'];
-                final String title = cdlistList['singer_name'];
+                final singer = Provide.value<Singer>(context).singer;
+                print('--------------------------------------->');
+                print(singer);
+
+                final String bgImage = singer['avatar'];
+                final String title = singer['name'];
                 final List songs = _normalizeSongs(cdlistList['list']);
                 return MusicList(songs:songs,bgImage:bgImage,title:title);
               }else{

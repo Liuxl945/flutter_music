@@ -44,8 +44,7 @@ Handler userHandler = Handler(
 
 Handler bannerDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
-    final url = params['url'] != null ? params['url'].first: 'https://yingliyingli.com';
-    return BannerDetail(url:url);
+    return BannerDetail();
   }
 );
 

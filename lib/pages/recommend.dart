@@ -4,12 +4,14 @@ import 'dart:convert';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
+import 'package:flutter_music/provide/banner_url.dart';
 import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provide/provide.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_music/route/route.dart';
 
@@ -57,9 +59,8 @@ class _RecommendPageState extends State<RecommendPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           var data = json.decode((snapshot.data).toString());
-          print(data);
           List<Map> swiperList = (data['data']['slider'] as List).cast();
-          print(swiperList);
+          
           return swiperRender(swiperList);
         }else{
           return Container(
@@ -89,9 +90,9 @@ class _RecommendPageState extends State<RecommendPage> {
         },
         onTap: (index){
           final url = swiperList[index]['linkUrl'];
-          final newUrl = Uri.encodeComponent(url);
-          print(newUrl);
-          Application.router.navigateTo(context, 'Routes.bannerDetail', transition: TransitionType.fadeIn);
+          Provide.value<BannerUrl>(context).setUrl(url);
+
+          Application.router.navigateTo(context, Routes.bannerDetail, transition: TransitionType.fadeIn);
         },
         loop: true,
         autoplay: true,
@@ -159,7 +160,6 @@ class _RecommendPageState extends State<RecommendPage> {
     return GestureDetector(
       onTap: (){
         Application.router.navigateTo(context, '${Routes.recommendDetail}?id=${song['dissid']}',transition: TransitionType.fadeIn);
-        print(song);
       },
       child: Container(
         color: config.BaseColor,

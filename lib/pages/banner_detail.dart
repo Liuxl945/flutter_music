@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music/provide/banner_url.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:provide/provide.dart';
 
 class BannerDetail extends StatefulWidget {
-  final String url;
-  BannerDetail({Key key, this.url}) : super(key: key);
+  
+  BannerDetail({Key key}) : super(key: key);
   _BannerDetailState createState() => _BannerDetailState();
 }
 
@@ -12,11 +14,13 @@ class _BannerDetailState extends State<BannerDetail> {
 
   @override
   Widget build(BuildContext context) {
-    print('${widget.url}--------------------------------->');
+    
+    final url = Provide.value<BannerUrl>(context).url;
+    print(url);
 
     return SafeArea(
       child: WebviewScaffold(
-        url: widget.url,
+        url: url,
         withZoom:true,
         withLocalStorage:true,
         hidden: true,

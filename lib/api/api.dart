@@ -141,4 +141,22 @@ class MusicApi {
     return response.data;
   }
 
+  static Future getMusicList(topid) async{
+    final url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg';
+    final Map<String,dynamic> queryParameters = {
+      'topid':topid,
+      'needNewCode': 1,
+      'uin': 0,
+      'tpl': 3,
+      'page': 'detail',
+      'type': 'top',
+      'platform': 'h5'
+    };
+
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters);
+    return response.data;
+  }
+
+
 }

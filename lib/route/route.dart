@@ -16,7 +16,7 @@ class Routes {
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      print('ERROR=====>ROUTE WAS NOT FOUND');
+      print('ERROR=====>ROUTE WAS NOT FOUND 路由出错啦');
       return null;
     });
 

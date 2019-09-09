@@ -34,9 +34,25 @@ class _SongListState extends State<SongList> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(item[i]['name'],style: TextStyle(color: Colors.white,fontSize: screen.setSp(28))),
+              Text(
+                item[i]['name'],
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screen.setSp(28),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
               SizedBox(height: screen.setHeight(20)),
-              Text('${item[i]['singer']}.${item[i]['album']}',style: TextStyle(color: config.PrimaryFontColor,fontSize: screen.setSp(28))),
+              Text(
+                '${item[i]['singer']}.${item[i]['album']}',
+                style: TextStyle(
+                  color: config.PrimaryFontColor,
+                  fontSize: screen.setSp(28),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         )

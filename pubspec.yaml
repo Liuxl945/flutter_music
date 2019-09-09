@@ -30,6 +30,7 @@ dependencies:
   dio: ^2.1.16
   fluro: "^1.5.1"
   flutter_webview_plugin: ^0.3.7
+  provide: ^1.0.2
 
 dev_dependencies:
   flutter_test:
