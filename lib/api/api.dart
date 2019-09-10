@@ -158,5 +158,33 @@ class MusicApi {
     return response.data;
   }
 
+  static Future getSearch(query, page, zhida, perpage) async{
+    final url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+    Options options = Options(headers: {
+      'referer': 'https://m.y.qq.com/?ADTAG=myqq',
+      'origin': 'https://m.y.qq.com'
+    });
 
+    final Map<String,dynamic> queryParameters = {
+      'w': query,
+      'p': page,
+      'perpage':perpage,
+      'n': perpage,
+      'catZhida': zhida ? 1 : 0,
+      'zhidaqu': 1,
+      't': 0,
+      'flag': 1,
+      'ie': 'utf-8',
+      'sem': 1,
+      'aggr': 0,
+      'remoteplace': 'txt.mqq.all',
+      'uin': 0,
+      'needNewCode': 1,
+      'platform': 'h5'
+    };
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
+    return response.data;
+
+  }
 }

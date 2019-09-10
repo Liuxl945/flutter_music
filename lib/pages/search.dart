@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/route/route.dart';
+import 'package:flutter_music/utils/song.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/variable.dart' as config;
 
@@ -20,6 +21,11 @@ class _SearchPageState extends State<SearchPage> {
   String searchKey = '';
 
   var _getHotKey;
+
+  List searchData = [];
+  bool searchNow = false; //是否是在搜索
+  int page = 1; //当前搜索的页数
+  final int perpage = 20; //每次搜索多少页
 
   @override
   void initState() {
@@ -37,11 +43,46 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           searchBar(),
           Expanded(
-            child: hotSearch(),
+            child: Stack(
+              children: <Widget>[
+                Offstage(
+                  offstage: searchNow,
+                  child: hotSearch(),
+                ),
+                Offstage(
+                  offstage: !searchNow,
+                  child: searchList(),
+                )
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  List _normalizeSongs(list){
+    final ret = [];
+    list.forEach((item){
+      if(item['songid'] != null && item['albummid'] != null){
+        ret.add(
+          CreateSong.createSong(item)
+        );
+      }
+    });
+    return ret;
+  }
+
+  List _genResult(Map data){
+    final ret = [];
+    if(data['zhida']['singerid'] != null){
+      ret.add(data['zhida']);
+    }
+    
+    if(data['song']['list'].length > 0){
+      ret.addAll(_normalizeSongs(data['song']['list']));
+    }
+    return ret;
   }
 
   // 搜索框
@@ -75,9 +116,20 @@ class _SearchPageState extends State<SearchPage> {
                   borderSide: BorderSide(width: 0,style: BorderStyle.none),
                 )
               ),
-              onChanged: (value){
+              onChanged: (value) async{
+                final res = await MusicApi.getSearch(value,page,true,perpage);
+                Map data;
+                try{
+                  data = json.decode(res.toString());
+                }catch(e){
+                  data = json.decode(json.encode(res));
+                }
+
+                final List newData = _genResult(data['data']);
                 setState(() {
+                  searchData = newData;
                   searchKey = value;
+                  searchNow = value != '';
                 });
               },
             ),
@@ -88,6 +140,8 @@ class _SearchPageState extends State<SearchPage> {
               onTap: (){
                 setState(() {
                   searchKey = '';
+                  searchNow = false;
+                  searchData = [];
                   if(ctl != null) ctl.clear();
                 });
               },
@@ -270,6 +324,46 @@ class _SearchPageState extends State<SearchPage> {
             },
             child: Icon(Icons.close,color: config.PrimaryFontColor),
           )
+        ],
+      ),
+    );
+  }
+
+
+  // 搜索列表
+  Widget searchList(){
+    return Container(
+      child: ListView.builder(
+        itemCount: searchData.length,
+        itemBuilder: (BuildContext context, int index) {
+          return searchItem(searchData[index]);
+        },
+      ),
+    );
+  }
+
+  // 单个搜索详情
+  Widget searchItem(Map item){
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: screen.setHeight(20),horizontal: screen.setWidth(40)),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: screen.setWidth(32),
+            height: screen.setHeight(32),
+            child: Icon(item['type'] != null ? Icons.perm_identity : Icons.music_note ,color: config.PrimaryFontColor,size: screen.setSp(30)),
+            margin: EdgeInsets.only(right: screen.setWidth(32)),
+          ),
+          Expanded(
+            child: Text(item['type'] != null ? item['singername']: '${item['album']} ${item['singer']}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: config.PrimaryFontColor,
+                fontSize: screen.setSp(28),
+              ),
+            ),
+          ),
         ],
       ),
     );
