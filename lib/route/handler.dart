@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_music/pages/banner_detail.dart';
+import 'package:flutter_music/pages/disc.dart';
 import 'package:flutter_music/pages/ranking.dart';
 import 'package:flutter_music/pages/ranking_detail.dart';
 import 'package:flutter_music/pages/recommend.dart';
@@ -66,5 +67,11 @@ Handler singerDetailHandler = Handler(
   handlerFunc: (BuildContext context,Map<String,dynamic> params){
     final id = params['id']?.first;
     return SingerDetail(id:id);
+  }
+);
+
+Handler discHandler = Handler(
+  handlerFunc: (BuildContext context,Map<String,dynamic> params){
+    return DiscPage();
   }
 );

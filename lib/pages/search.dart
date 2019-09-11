@@ -1,13 +1,17 @@
 
 import 'dart:convert';
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/provide/singer.dart';
+import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/utils/song.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:provide/provide.dart';
 
 
 class SearchPage extends StatefulWidget {
@@ -342,29 +346,51 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  // 歌手信息数据
+  Map<String,dynamic> singer(Map detals){
+    return {
+      'id':detals['singermid'],
+      'name':detals['singername'],
+      'avatar':'https://y.gtimg.cn/music/photo_new/T001R150x150M000${detals['singermid']}.jpg?max_age=2592000',
+    };
+  }
+
   // 单个搜索详情
   Widget searchItem(Map item){
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: screen.setHeight(20),horizontal: screen.setWidth(40)),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: screen.setWidth(32),
-            height: screen.setHeight(32),
-            child: Icon(item['type'] != null ? Icons.perm_identity : Icons.music_note ,color: config.PrimaryFontColor,size: screen.setSp(30)),
-            margin: EdgeInsets.only(right: screen.setWidth(32)),
-          ),
-          Expanded(
-            child: Text(item['type'] != null ? item['singername']: '${item['album']} ${item['singer']}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: config.PrimaryFontColor,
-                fontSize: screen.setSp(28),
+    return GestureDetector(
+      onTap: (){
+        if(item['singerid'] != null){
+
+          Provide.value<Singer>(context).setSinger(singer(item));
+
+          Application.router.navigateTo(context, '${Routes.singerDetail}?id=${item['singermid']}',transition: TransitionType.fadeIn);
+        }else{
+          Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
+        }
+        print(item);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: screen.setHeight(20),horizontal: screen.setWidth(40)),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: screen.setWidth(32),
+              height: screen.setHeight(32),
+              child: Icon(item['type'] != null ? Icons.perm_identity : Icons.music_note ,color: config.PrimaryFontColor,size: screen.setSp(30)),
+              margin: EdgeInsets.only(right: screen.setWidth(32)),
+            ),
+            Expanded(
+              child: Text(item['type'] != null ? item['singername']: '${item['album']} ${item['singer']}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: config.PrimaryFontColor,
+                  fontSize: screen.setSp(28),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

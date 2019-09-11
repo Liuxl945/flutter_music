@@ -185,6 +185,49 @@ class MusicApi {
     queryParameters.addAll(config.commonParams);
     Response response = await dio.get(url,queryParameters:queryParameters,options: options);
     return response.data;
-
   }
+
+  static Future getMusicResult(songmid) async{
+    final url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+    Options options = Options(headers: {
+      'referer': 'https://y.qq.com/portal/player.html',
+      'origin': 'https://y.qq.com'
+    });
+
+    final Map<String,dynamic> queryParameters = {
+      'hostUin': 0,
+      'loginUin': 0,
+      'needNewCode': 0,
+      'platform': 'yqq.json',
+      'data':'{"req":{"module":"CDN.SrfCdnDispatchServer","method":"GetCdnDispatch","param":{"guid":"1416627489","calltype":0,"userip":""}},"req_0":{"module":"vkey.GetVkeyServer","method":"CgiGetVkey","param":{"guid":"1416627489","songmid":["$songmid"],"songtype":[0],"uin":"0","loginflag":1,"platform":"20"}},"comm":{"uin":0,"format":"json","ct":24,"cv":0}}'
+    };
+
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
+    return response.data;
+  }
+
+  static Future getLyric(songmid) async{
+    final url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
+    Options options = Options(headers: {
+      'referer': 'https://y.qq.com/portal/player.html',
+      'origin': 'https://y.qq.com'
+    });
+
+    final Map<String,dynamic> queryParameters = {
+      'songmid': songmid,
+      'pcachetime': DateTime.now().microsecondsSinceEpoch,
+      'platform': "yqq.json",
+      'needNewCode': 0,
+      'loginUin': 0,
+      'hostUin': 0,
+      "-": "MusicJsonCallback_lrc"
+    };
+
+    queryParameters.addAll(config.commonParams);
+    Response response = await dio.get(url,queryParameters:queryParameters,options: options);
+    return response.data;
+  }
+
+
 }

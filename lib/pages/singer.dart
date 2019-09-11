@@ -325,6 +325,11 @@ class _IndexBarState extends State<IndexBar> {
 
   void _triggerTouch(int index) {
     if (widget.onTouchCallback != null) {
+      if(index <0 ){
+        index = 0;
+      }else if (index > children.length -1){
+        index = children.length -1;
+      }
       widget.onTouchCallback(index);
     }
   }

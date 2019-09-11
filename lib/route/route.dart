@@ -12,6 +12,7 @@ class Routes {
   static String recommendDetail = '/recommendDetail';
   static String rankingDetail = '/rankingDetail';
   static String singerDetail = '/singerDetail';
+  static String disc = '/disc';
 
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
@@ -29,5 +30,6 @@ class Routes {
     router.define(recommendDetail, handler: recommendDetailHandler);
     router.define(rankingDetail, handler: rankingDetailHandler);
     router.define(singerDetail, handler: singerDetailHandler);
+    router.define(disc, handler: discHandler);
   }
 }

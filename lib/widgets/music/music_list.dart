@@ -94,7 +94,7 @@ class _MusicListState extends State<MusicList> {
               },
               child: Container(
                 width: appbarHeight,
-                child: Icon(Icons.arrow_back_ios,size: 32,color: config.PrimaryColor),
+                child: Icon(Icons.arrow_back_ios,size: screen.setSp(44),color: config.PrimaryColor),
               ),
             ),
             Expanded(
