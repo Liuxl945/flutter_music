@@ -2,8 +2,10 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/route/application.dart';
+import 'package:flutter_music/provide/song.dart';
 import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:provide/provide.dart';
 
 class SongList extends StatefulWidget {
   final List songs;
@@ -28,11 +30,13 @@ class _SongListState extends State<SongList> {
   List<Widget> listViewChildren(List item){
     List<Widget> list = [];
 
-    Widget boxContainer({child,@required song}){
+    Widget boxContainer({child,@required song, @required index}){
       return GestureDetector(
         onTap: (){
-          print(song);
+
+          Provide.value<SongState>(context).selectPlay(item, index);
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
+
         },
         child: Container(
           color: Colors.transparent,
@@ -49,6 +53,7 @@ class _SongListState extends State<SongList> {
         list.add(
           boxContainer(
             song: item[i],
+            index:i,
             child:Row(
               children: <Widget>[
                 leftRanking(i),
@@ -65,6 +70,7 @@ class _SongListState extends State<SongList> {
         list.add(
           boxContainer(
             song: item[i],
+            index:i,
             child:songDetail(item[i]),
           )
         );

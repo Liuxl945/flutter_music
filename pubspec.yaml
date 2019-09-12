@@ -32,6 +32,7 @@ dependencies:
   flutter_webview_plugin: ^0.3.7
   provide: ^1.0.2
   pull_to_refresh: ^1.5.4
+  audioplayers: ^0.13.2
 
 dev_dependencies:
   flutter_test:

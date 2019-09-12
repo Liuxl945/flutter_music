@@ -188,7 +188,7 @@ class MusicApi {
   }
 
   static Future getMusicResult(songmid) async{
-    final url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+    final url = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
     Options options = Options(headers: {
       'referer': 'https://y.qq.com/portal/player.html',
       'origin': 'https://y.qq.com'

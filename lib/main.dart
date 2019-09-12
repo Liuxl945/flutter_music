@@ -7,13 +7,17 @@ import 'package:flutter_music/route/application.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_music/provide/singer.dart';
 
+import 'provide/song.dart';
+
 void main(){
   var providers = Providers();
   var singer = Singer();
   var bannerUrl = BannerUrl();
+  var songState = SongState();
 
   providers..provide(Provider<Singer>.value(singer));
   providers..provide(Provider<BannerUrl>.value(bannerUrl));
+  providers..provide(Provider<SongState>.value(songState));
 
   runApp(ProviderNode(
     providers: providers,

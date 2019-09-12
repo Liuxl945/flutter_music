@@ -1,8 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:provide/provide.dart';
+import 'package:flutter_music/provide/song.dart';
+import 'package:flutter_music/widgets/play/play.dart';
 
 class DiscPage extends StatefulWidget {
   DiscPage({Key key}) : super(key: key);
@@ -11,91 +13,267 @@ class DiscPage extends StatefulWidget {
 }
 
 class _DiscPageState extends State<DiscPage> {
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    SongState songState = Provide.value<SongState>(context);
+    print(songState.playlist);
+    print(songState.currentIndex);
+    print(songState.playing);
+    print(songState.fullScreen);
+
+    // 背景图片
+    Widget bgImage(song){
+      return Container(
+        child: Image.network(song['image'] ?? 'http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
+        height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
+        width: screen.setWidth(750),
+        fit: BoxFit.fill,
+        ),
+      );
+    }
+
+    // 背景图片模糊
+    Widget gbFilter(){
+      return Container(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black54,
+                  Colors.black26,
+                  Colors.black45,
+                  Colors.black87,
+                ],
+              ),
+            ),
+          )
+        ),
+      );
+    }
+
+    // 回退按钮
+    Widget backArrow(){
+      return GestureDetector(
+        onTap: (){
+          Navigator.of(context).pop();
+        },
+        child: Container(
+          width: screen.setWidth(80),
+          height: screen.setHeight(80),
+          child: Icon(Icons.expand_more,size: screen.setSp(64),color: config.PrimaryColor),
+        ),
+      );
+    }
+
+    // 歌曲标题
+    Widget songTitle(song){
+      return Expanded(
+        child: Text(song['name'],
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            
+            color: Colors.white,
+            fontSize: screen.setSp(36),
+          ),
+        ),
+      );
+    }
+
+    // 歌曲歌手
+    Widget songSinger(song){
+      return Container(
+        child: Text(song['name'],
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: screen.setSp(28),
+          ),
+        ),
+      );
+    }
+
+    // 歌曲CD图片
+    Widget songCdImage(song){
+      return Container(
+        height: screen.setHeight(600),
+        width: screen.setWidth(600),
+        padding: EdgeInsets.all(screen.setWidth(20)),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(0, 0, 0, .15),
+          borderRadius: BorderRadius.all(
+            Radius.circular(300),
+          ),
+        ),
+        child: ClipOval(
+          child: Image.network(song['image']??'http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    // 歌词CD切换
+    Widget lyricImageBar(){
+      return Container(
+        height: screen.setHeight(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: screen.setWidth(40),
+              height: screen.setHeight(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(40),
+                ),
+                color: Color.fromRGBO(255, 255, 255, .8),
+              ),
+            ),
+            SizedBox(width: screen.setWidth(20)),
+            Container(
+              width: screen.setWidth(16),
+              height: screen.setHeight(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(40),
+                ),
+                color: Color.fromRGBO(255, 255, 255, .5),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    // 歌曲进度控制器
+    Widget scrollBar(){
+      return Container(
+        height: screen.setHeight(100),
+        width: screen.setWidth(600),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: screen.setWidth(60),
+              child: Text('0:00',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screen.setSp(24),
+                ),
+              ),
+            ),
+            Container(
+              width: screen.setWidth(480),
+              height: screen.setHeight(8),
+              decoration: BoxDecoration(
+              color: Colors.deepOrange,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(8),
+                ),
+              ),
+            ),
+            Container(
+              width: screen.setWidth(60),
+              alignment: Alignment.centerRight,
+              child: Text('0:00',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screen.setSp(24),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    // 控制按钮
+    Widget controlBtn(){
+      return Container(
+        height: screen.setHeight(80),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Icon(Icons.copyright,
+                  color: config.PrimaryColor,
+                  size: screen.setSp(60),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Icon(Icons.skip_previous,
+                  color: config.PrimaryColor,
+                  size: screen.setSp(60),
+                ),
+              ),
+            ),
+            Container(
+              width: screen.setWidth(214),
+              child: Container(
+                child: Icon(Icons.play_circle_outline,
+                  color: config.PrimaryColor,
+                  size: screen.setSp(80),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.skip_next,
+                  color: config.PrimaryColor,
+                  size: screen.setSp(60),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.favorite_border,
+                  color: config.PrimaryColor,
+                  size: screen.setSp(60),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            Container(
-              child: Image.network('http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
-              height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
-              width: screen.setWidth(750),
-              fit: BoxFit.fill,
-              ),
-            ),
-            Container(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  color: Colors.black.withOpacity(.5),
-                )
-              ),
-            ),
+            bgImage(songState.playlist[songState.currentIndex]),
+            gbFilter(),
             
             Column(
               children: <Widget>[
                 Container(
                   child: Row(
                     children: <Widget>[
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          width: screen.setWidth(80),
-                          height: screen.setHeight(80),
-                          child: Icon(Icons.expand_more,size: screen.setSp(64),color: config.PrimaryColor),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text('琥珀列车琥琥珀列车',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            
-                            color: Colors.white,
-                            fontSize: screen.setSp(36),
-                          ),
-                        ),
-                      ),
+                      backArrow(),
+                      songTitle(songState.playlist[songState.currentIndex]),
                       SizedBox(width: screen.setHeight(80)),
                     ],
                   ),
                 ),
-                Container(
-                  child: Text('瓦洛与琥珀虫',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screen.setSp(28),
-                    ),
-                  ),
-                ),
+                songSinger(songState.playlist[songState.currentIndex]),
                 SizedBox(height: screen.setHeight(50)),
                 Expanded(
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        height: screen.setHeight(600),
-                        width: screen.setWidth(600),
-                        padding: EdgeInsets.all(screen.setWidth(20)),
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(0, 0, 0, .2),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(300),
-                          ),
-                        ),
-                        child: ClipOval(
-                          child: Image.network('http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      songCdImage(songState.playlist[songState.currentIndex]),
                       Container(
                         padding: EdgeInsets.only(top: screen.setHeight(60)),
                         child: Container(
@@ -113,127 +291,13 @@ class _DiscPageState extends State<DiscPage> {
                     ],
                   ),
                 ),
-                Container(
-                  height: screen.setHeight(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: screen.setWidth(40),
-                        height: screen.setHeight(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(40),
-                          ),
-                          color: Color.fromRGBO(255, 255, 255, .8),
-                        ),
-                      ),
-                      SizedBox(width: screen.setWidth(20)),
-                      Container(
-                        width: screen.setWidth(16),
-                        height: screen.setHeight(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(40),
-                          ),
-                          color: Color.fromRGBO(255, 255, 255, .5),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  height: screen.setHeight(100),
-                  width: screen.setWidth(600),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        width: screen.setWidth(60),
-                        child: Text('0:00',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screen.setSp(24),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: screen.setWidth(480),
-                        height: screen.setHeight(8),
-                        decoration: BoxDecoration(
-                        color: Colors.deepOrange,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: screen.setWidth(60),
-                        alignment: Alignment.centerRight,
-                        child: Text('0:00',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screen.setSp(24),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  height: screen.setHeight(80),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.copyright,
-                            color: config.PrimaryColor,
-                            size: screen.setSp(60),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.skip_previous,
-                            color: config.PrimaryColor,
-                            size: screen.setSp(60),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: screen.setWidth(214),
-                        child: Container(
-                          child: Icon(Icons.play_circle_outline,
-                            color: config.PrimaryColor,
-                            size: screen.setSp(80),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Icon(Icons.skip_next,
-                            color: config.PrimaryColor,
-                            size: screen.setSp(60),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Icon(Icons.favorite_border,
-                            color: config.PrimaryColor,
-                            size: screen.setSp(60),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                lyricImageBar(),
+                scrollBar(),
+                controlBtn(),
                 SizedBox(height: screen.setHeight(100)),
               ],
             ),
+            PlayMusic(mid: songState.playlist[songState.currentIndex]['mid'])
           ],
         ),
       ),
