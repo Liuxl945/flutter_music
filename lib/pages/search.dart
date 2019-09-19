@@ -21,7 +21,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController ctl;
+  TextEditingController _searchName;
   String searchKey = '';
 
   var _getHotKey;
@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    ctl = TextEditingController();
+    _searchName = TextEditingController();
     _getHotKey = MusicApi.getHotKey();
   }
 
@@ -106,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
           Expanded(
             child: TextField(
               maxLines: 1,
-              controller: ctl,
+              controller: _searchName,
               style: TextStyle(fontSize: 18,color: Colors.white),
               cursorColor: Colors.white,
               decoration: InputDecoration(
@@ -121,6 +121,7 @@ class _SearchPageState extends State<SearchPage> {
                 )
               ),
               onChanged: (value) async{
+
                 final res = await MusicApi.getSearch(value,page,true,perpage);
                 Map data;
                 try{
@@ -146,7 +147,7 @@ class _SearchPageState extends State<SearchPage> {
                   searchKey = '';
                   searchNow = false;
                   searchData = [];
-                  if(ctl != null) ctl.clear();
+                  if(_searchName != null) _searchName.clear();
                 });
               },
               child: Icon(Icons.close,size: 20,color: config.LightFontColor),
@@ -223,6 +224,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget serchBtn(item){
     return GestureDetector(
       onTap: (){
+        setState(() {
+          searchNow = true;
+          _searchName.text = item['k'];
+        });
+        
         print(item);
       },
       child: Container(
