@@ -8,6 +8,7 @@ import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/provide/singer.dart';
 import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/route/route.dart';
+import 'package:flutter_music/storage/search_history.dart' as storage;
 import 'package:flutter_music/utils/song.dart';
 import 'package:flutter_music/widgets/common/common_navigation.dart';
 import 'package:flutter_music/variable.dart' as config;
@@ -35,7 +36,30 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _searchName = TextEditingController();
+
+    _searchName.addListener(() async{
+      final res = await MusicApi.getSearch(_searchName.text,page,true,perpage);
+      Map data;
+      try{
+        data = json.decode(res.toString());
+      }catch(e){
+        data = json.decode(json.encode(res));
+      }
+
+      final List newData = _genResult(data['data']);
+      setState(() {
+        searchData = newData;
+        searchKey = _searchName.text;
+        searchNow = _searchName.text != '';
+      });
+    });
     _getHotKey = MusicApi.getHotKey();
+  }
+
+  @override
+  void dispose() { 
+    _searchName.dispose();
+    super.dispose();
   }
 
   @override
@@ -120,23 +144,6 @@ class _SearchPageState extends State<SearchPage> {
                   borderSide: BorderSide(width: 0,style: BorderStyle.none),
                 )
               ),
-              onChanged: (value) async{
-
-                final res = await MusicApi.getSearch(value,page,true,perpage);
-                Map data;
-                try{
-                  data = json.decode(res.toString());
-                }catch(e){
-                  data = json.decode(json.encode(res));
-                }
-
-                final List newData = _genResult(data['data']);
-                setState(() {
-                  searchData = newData;
-                  searchKey = value;
-                  searchNow = value != '';
-                });
-              },
             ),
           ),
           Offstage(
@@ -226,10 +233,8 @@ class _SearchPageState extends State<SearchPage> {
       onTap: (){
         setState(() {
           searchNow = true;
-          _searchName.text = item['k'];
+          _searchName.text = searchKey = item['k'].substring(0,item['k'].length-1);
         });
-        
-        print(item);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: screen.setWidth(20),vertical: screen.setHeight(10)),
@@ -252,16 +257,31 @@ class _SearchPageState extends State<SearchPage> {
 
   // 搜索历史
   Widget searchHistory(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: screen.setWidth(40)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          historyTitle(),
-          historyList(),
-        ],
-      ),
+    Future<List<String>> history = storage.historyData();
+
+    return FutureBuilder(
+      future: history,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+
+        List data = json.decode(json.encode(snapshot.data)) ?? [];
+
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: screen.setWidth(40)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Offstage(
+                child: historyTitle(),
+                offstage: data.length == 0,
+              ),
+              historyList(data),
+            ],
+          ),
+        );
+      },
     );
+
+    
   }
 
   Widget historyTitle(){
@@ -279,7 +299,8 @@ class _SearchPageState extends State<SearchPage> {
           ),
           GestureDetector(
             onTap: (){
-              print('222');
+              storage.clearSearchHistory();
+              setState(() {});
             },
             child: Icon(Icons.delete,color: config.PrimaryFontColor),
           ),
@@ -288,25 +309,15 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget historyList(){
+  Widget historyList(List data){
+    List<Widget> list = [];
+    data.forEach((value){
+      list.add(
+        historyItem(value)
+      );
+    });
     return Column(
-      children: <Widget>[
-        historyItem('那个女孩'),
-        historyItem('恋人未满'),
-        historyItem('大于'),
-        historyItem('篮子回头'),
-        historyItem('周杰昆仑'),
-        historyItem('那个女孩'),
-        historyItem('恋人未满'),
-        historyItem('大于'),
-        historyItem('篮子回头'),
-        historyItem('周杰昆仑'),
-        historyItem('那个女孩'),
-        historyItem('恋人未满'),
-        historyItem('大于'),
-        historyItem('篮子回头'),
-        historyItem('周杰昆仑'),
-      ],
+      children: list,
     );
   }
 
@@ -318,7 +329,7 @@ class _SearchPageState extends State<SearchPage> {
           Expanded(
             child: GestureDetector(
               onTap: (){
-                print('111');
+                _searchName.text = name;
               },
               child: Text(name,
                 style: TextStyle(
@@ -330,7 +341,8 @@ class _SearchPageState extends State<SearchPage> {
           ),
           GestureDetector(
             onTap: (){
-              print('222');
+              storage.deleteSearchName(name);
+              setState(() {});
             },
             child: Icon(Icons.close,color: config.PrimaryFontColor),
           )
@@ -371,9 +383,11 @@ class _SearchPageState extends State<SearchPage> {
 
           Application.router.navigateTo(context, '${Routes.singerDetail}?id=${item['singermid']}',transition: TransitionType.fadeIn);
         }else{
+          storage.insertHistory(_searchName.text);
+          return;
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
         }
-        print(item);
+        
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: screen.setHeight(20),horizontal: screen.setWidth(40)),
