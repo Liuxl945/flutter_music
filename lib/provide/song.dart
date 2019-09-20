@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 Map playMode = {
@@ -43,8 +44,9 @@ class SongState with ChangeNotifier{
   int currentIndex = -1;//选中的歌曲列表下标
   bool playing = false;//是否播放
   bool fullScreen = false;//是否全屏显示
+  AudioPlayer audioPlayer = AudioPlayer();
 
-  selectPlay(list,index){
+  selectPlay(List list,int index){
     if(mode == playMode['random']){
       final List randomList = shuffle(list);
       playlist = randomList;
@@ -58,4 +60,15 @@ class SongState with ChangeNotifier{
 
     notifyListeners();
   }
+  stopSongs(){
+    audioPlayer.stop();
+    notifyListeners();
+  }
+
+  playSongs(String songsUrl){
+    audioPlayer.play(songsUrl);
+    // audioPlayer.resume();
+    notifyListeners();
+  }
+
 }

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:provide/provide.dart';
@@ -20,6 +22,20 @@ class _DiscPageState extends State<DiscPage> {
     print(songState.currentIndex);
     print(songState.playing);
     print(songState.fullScreen);
+
+    MusicApi.getLyric(songState.playlist[songState.currentIndex]['mid']).then((value){
+      Map data;
+      try{
+        data = json.decode(json.encode(value));
+      }catch(e){
+        data = json.decode(value.toString());
+      }
+
+      final lyric = base64Decode(data['lyric']);
+      print(data);
+      print(lyric);
+    });
+
 
     // 背景图片
     Widget bgImage(song){
