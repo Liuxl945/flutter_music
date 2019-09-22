@@ -262,22 +262,25 @@ class _SearchPageState extends State<SearchPage> {
     return FutureBuilder(
       future: history,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-
-        List data = json.decode(json.encode(snapshot.data)) ?? [];
-
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: screen.setWidth(40)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Offstage(
-                child: historyTitle(),
-                offstage: data.length == 0,
-              ),
-              historyList(data),
-            ],
-          ),
-        );
+        if(snapshot.hasData){
+          List data = json.decode(json.encode(snapshot.data)) ?? [];
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: screen.setWidth(40)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Offstage(
+                  child: historyTitle(),
+                  offstage: data.length == 0,
+                ),
+                historyList(data),
+              ],
+            ),
+          );
+        }else{
+          return Container();
+        }
+        
       },
     );
 

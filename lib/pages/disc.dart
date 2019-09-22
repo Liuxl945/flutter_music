@@ -7,6 +7,7 @@ import 'package:flutter_music/variable.dart' as config;
 import 'package:provide/provide.dart';
 import 'package:flutter_music/provide/song.dart';
 import 'package:flutter_music/widgets/play/play.dart';
+import 'package:flutter_music/widgets/play/lyric.dart';
 
 class DiscPage extends StatefulWidget {
   DiscPage({Key key}) : super(key: key);
@@ -15,26 +16,15 @@ class DiscPage extends StatefulWidget {
 }
 
 class _DiscPageState extends State<DiscPage> {
+
+  var _getLyric;
+
+
   @override
   Widget build(BuildContext context){
     SongState songState = Provide.value<SongState>(context);
-    print(songState.playlist);
-    print(songState.currentIndex);
-    print(songState.playing);
-    print(songState.fullScreen);
 
-    MusicApi.getLyric(songState.playlist[songState.currentIndex]['mid']).then((value){
-      Map data;
-      try{
-        data = json.decode(json.encode(value));
-      }catch(e){
-        data = json.decode(value.toString());
-      }
-
-      final lyric = base64Decode(data['lyric']);
-      print(data);
-      print(lyric);
-    });
+    _getLyric = MusicApi.getLyric(songState.playlist[songState.currentIndex]['mid']);
 
 
     // 背景图片
@@ -313,7 +303,27 @@ class _DiscPageState extends State<DiscPage> {
                 SizedBox(height: screen.setHeight(100)),
               ],
             ),
-            PlayMusic(mid: songState.playlist[songState.currentIndex]['mid'])
+            // PlayMusic(mid: songState.playlist[songState.currentIndex]['mid'])
+            FutureBuilder(
+              future: _getLyric,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if(snapshot.hasData){
+                  Map data;
+                  try{
+                    data = json.decode(json.encode(snapshot.data));
+                  }catch(e){
+                    data = json.decode(snapshot.data.toString());
+                  }
+
+                  final String lyric = utf8.decode(base64Decode(data['lyric']));
+                  songState.setLyric(lyric);
+
+                  return Lyric(lyric: songState.lyric);
+                }else{
+                  return Container();
+                }
+              },
+            ),
           ],
         ),
       ),

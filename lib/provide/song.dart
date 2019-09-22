@@ -44,7 +44,8 @@ class SongState with ChangeNotifier{
   int currentIndex = -1;//选中的歌曲列表下标
   bool playing = false;//是否播放
   bool fullScreen = false;//是否全屏显示
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
+  String lyric = '';
 
   selectPlay(List list,int index){
     if(mode == playMode['random']){
@@ -69,6 +70,10 @@ class SongState with ChangeNotifier{
     audioPlayer.play(songsUrl);
     // audioPlayer.resume();
     notifyListeners();
+  }
+
+  setLyric(String value){
+    lyric = value;
   }
 
 }
