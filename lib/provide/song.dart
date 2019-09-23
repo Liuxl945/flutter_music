@@ -46,6 +46,8 @@ class SongState with ChangeNotifier{
   bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
   String lyric = '';
+  Duration duration;
+  Duration position;
 
   selectPlay(List list,int index){
     if(mode == playMode['random']){
@@ -66,14 +68,68 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
-  playSongs(String songsUrl){
-    audioPlayer.play(songsUrl);
+  playSongs(String songsUrl) async {
+    int result = await audioPlayer.play(songsUrl);
+    if(result == 1){
+      // success
+      audioPlayer.onDurationChanged.listen((value){
+        duration = value;
+        notifyListeners();
+      });
+
+      audioPlayer.onAudioPositionChanged.listen((p){
+        position = p;
+        notifyListeners();
+      });
+    }
     // audioPlayer.resume();
     notifyListeners();
   }
 
   setLyric(String value){
     lyric = value;
+    notifyListeners();
+  }
+
+  prev(){
+    print('prev');
+    if(playlist.length == 1){
+
+    }else{
+      int index = currentIndex - 1;
+      if(index == -1){
+        index = playlist.length - 1 ;
+      }
+      currentIndex = index;
+      
+      if(!playing){
+        togglePlaying();
+      }
+    }
+    notifyListeners();
+  }
+
+  next(){
+    print('next');
+    if(playlist.length == 1){
+
+    }else{
+      int index = currentIndex + 1;
+      if(index == playlist.length){
+        index = 0;
+      }
+      currentIndex = index;
+      
+      if(!playing){
+        togglePlaying();
+      }
+    }
+    notifyListeners();
+  }
+
+  togglePlaying(){
+    playing = !playing;
+    notifyListeners();
   }
 
 }

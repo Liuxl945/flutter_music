@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SongState with ChangeNotifier{
+class LyricState with ChangeNotifier{
   String lyric = '';
 
   setLyric(String value){
