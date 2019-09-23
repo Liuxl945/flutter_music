@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_music/provide/song.dart';
 import 'package:flutter_music/widgets/play/play.dart';
@@ -18,6 +19,7 @@ class DiscPage extends StatefulWidget {
 class _DiscPageState extends State<DiscPage> {
 
   var _getLyric;
+  int _scrollIndex = 0;
 
 
   @override
@@ -126,32 +128,32 @@ class _DiscPageState extends State<DiscPage> {
       );
     }
 
-    // 歌词CD切换
-    Widget lyricImageBar(){
+    // 歌词CD切换控制器
+    Widget lyricImageBar(int index){
       return Container(
         height: screen.setHeight(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: screen.setWidth(40),
+              width: screen.setWidth(index == 0 ? 40: 16),
               height: screen.setHeight(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(40),
                 ),
-                color: Color.fromRGBO(255, 255, 255, .8),
+                color: Color.fromRGBO(255, 255, 255, (index == 0 ? .8: .5)),
               ),
             ),
             SizedBox(width: screen.setWidth(20)),
             Container(
-              width: screen.setWidth(16),
+              width: screen.setWidth(index == 1 ? 40: 16),
               height: screen.setHeight(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(40),
                 ),
-                color: Color.fromRGBO(255, 255, 255, .5),
+                color: Color.fromRGBO(255, 255, 255, (index == 1 ? .8: .5)),
               ),
             )
           ],
@@ -256,6 +258,72 @@ class _DiscPageState extends State<DiscPage> {
       );
     }
 
+    Widget cdLyricSwiper(){
+      return Container(
+        child: Swiper(
+          outer:true,
+          onIndexChanged: (index){
+            if(index != _scrollIndex){
+              setState(() {
+                _scrollIndex = index;//歌词还是CD?
+              });
+            }
+          },
+          itemBuilder: (BuildContext context, int index){
+
+            if(index == 0){
+              return Container(
+                child: Column(
+                  children: <Widget>[
+                    songCdImage(songState.playlist[songState.currentIndex]),
+                    Container(
+                      padding: EdgeInsets.only(top: screen.setHeight(60)),
+                      child: Container(
+                        width: screen.setWidth(600),
+                        child: Text('曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦',
+                          style: TextStyle(
+                            color: config.PrimaryFontColor,
+                            fontSize: screen.setSp(28),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }else{
+              return Container(
+                child: FutureBuilder(
+                  future: _getLyric,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if(snapshot.hasData){
+                      Map data;
+                      try{
+                        data = json.decode(json.encode(snapshot.data));
+                      }catch(e){
+                        data = json.decode(snapshot.data.toString());
+                      }
+
+                      final String lyric = utf8.decode(base64Decode(data['lyric']));
+                      songState.setLyric(lyric);
+
+                      return Lyric(lyric: songState.lyric);
+                    }else{
+                      return Container();
+                    }
+                  },
+                ),
+              );
+            }
+            
+          },
+          itemCount: 2,
+        ),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -277,53 +345,16 @@ class _DiscPageState extends State<DiscPage> {
                 songSinger(songState.playlist[songState.currentIndex]),
                 SizedBox(height: screen.setHeight(50)),
                 Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      songCdImage(songState.playlist[songState.currentIndex]),
-                      Container(
-                        padding: EdgeInsets.only(top: screen.setHeight(60)),
-                        child: Container(
-                          width: screen.setWidth(600),
-                          child: Text('曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦',
-                            style: TextStyle(
-                              color: config.PrimaryFontColor,
-                              fontSize: screen.setSp(28),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                  child:cdLyricSwiper(),
                 ),
-                lyricImageBar(),
+                lyricImageBar(_scrollIndex),
                 scrollBar(),
                 controlBtn(),
                 SizedBox(height: screen.setHeight(100)),
               ],
             ),
             // PlayMusic(mid: songState.playlist[songState.currentIndex]['mid'])
-            FutureBuilder(
-              future: _getLyric,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if(snapshot.hasData){
-                  Map data;
-                  try{
-                    data = json.decode(json.encode(snapshot.data));
-                  }catch(e){
-                    data = json.decode(snapshot.data.toString());
-                  }
-
-                  final String lyric = utf8.decode(base64Decode(data['lyric']));
-                  songState.setLyric(lyric);
-
-                  return Lyric(lyric: songState.lyric);
-                }else{
-                  return Container();
-                }
-              },
-            ),
+            
           ],
         ),
       ),
