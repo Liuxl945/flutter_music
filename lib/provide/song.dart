@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music/api/api.dart';
 
 Map playMode = {
   'sequence': 0,
@@ -86,8 +88,18 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
-  setLyric(String value){
-    lyric = value;
+  setLyric() async{
+    final res = await MusicApi.getLyric(playlist[currentIndex]['mid']);
+    Map data;
+    try{
+      data = json.decode(res.toString());
+    }catch(e){
+      data = json.decode(json.encode(res));
+    }
+
+    final String newLyric = utf8.decode(base64Decode(data['lyric']));
+
+    lyric = newLyric;
     notifyListeners();
   }
 
@@ -106,6 +118,7 @@ class SongState with ChangeNotifier{
         togglePlaying();
       }
     }
+    setLyric();
     notifyListeners();
   }
 
@@ -124,6 +137,7 @@ class SongState with ChangeNotifier{
         togglePlaying();
       }
     }
+    setLyric();
     notifyListeners();
   }
 

@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/provide/song.dart';
+import 'package:provide/provide.dart';
 
 class Lyric extends StatefulWidget {
-  final lyric;
-
-  Lyric({Key key,@required this.lyric}) : super(key: key);
+  Lyric({Key key}) : super(key: key);
 
   _LyricState createState() => _LyricState();
 }
@@ -46,8 +48,8 @@ class _LyricState extends State<Lyric> {
     return this._formatLyric.length - 1;
   }
 
-  void formatLyricFunc(){
-    final List lines = widget.lyric.split('\n');
+  List<Map> formatLyricFunc(lyric){
+    final List lines = lyric.split('\n');
     RegExp pattern = RegExp(r"\[\d{2}:\d{2}.\d{2,3}]");
     
     for (var i = 0; i < lines.length; i++) {
@@ -72,6 +74,8 @@ class _LyricState extends State<Lyric> {
         _formatLyric.add(map);
       }
     }
+
+    return _formatLyric;
   }
 
   void play({int startTime = 0}){
@@ -102,39 +106,44 @@ class _LyricState extends State<Lyric> {
     });
   }
 
-
-  @override
-  void initState() {
-    formatLyricFunc();
-    super.initState();
-  }
-
   @override
   void dispose() {
     _countdownTimer?.cancel();
     super.dispose();
   }
 
+  Widget lyricRender(){
+    return Provide<SongState>(builder: (context, child, counter){
+      
+      List<Map> formatLyric = _formatLyric = formatLyricFunc(counter.lyric); //格式化歌词
+      print(counter.lyric);
+      return Container(
+        padding: EdgeInsets.only(bottom: screen.setHeight(20)),
+        child: ListView.builder(
+          itemCount: formatLyric.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(vertical: screen.setHeight(10)),
+              child: Text(formatLyric[index]['txt'],
+                style: TextStyle(
+                  color: Color.fromRGBO(255, 255, 255, index == curNum ? 1 : .5),
+                  fontSize: screen.setSp(28),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }); 
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: screen.setHeight(20)),
-      child: ListView.builder(
-        itemCount: _formatLyric.length,
-        itemBuilder: (BuildContext context, int index) {
-        return Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: screen.setHeight(10)),
-          child: Text(_formatLyric[index]['txt'],
-            style: TextStyle(
-              color: Color.fromRGBO(255, 255, 255, index == curNum ? 1 : .5),
-              fontSize: screen.setSp(28),
-            ),
-          ),
-        );
-       },
-      ),
-    );
+    SongState songState = Provide.value<SongState>(context);
+    songState.setLyric();
+
+    return lyricRender();
   }
 }
 

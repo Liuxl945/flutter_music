@@ -19,16 +19,12 @@ class DiscPage extends StatefulWidget {
 
 class _DiscPageState extends State<DiscPage> {
 
-  var _getLyric;
   int _scrollIndex = 0;
 
 
   @override
   Widget build(BuildContext context){
     SongState songState = Provide.value<SongState>(context);
-
-    _getLyric = MusicApi.getLyric(songState.playlist[songState.currentIndex]['mid']);
-
 
     // 背景图片
     Widget bgImage(song){
@@ -110,7 +106,7 @@ class _DiscPageState extends State<DiscPage> {
     }
 
     // 歌曲CD图片
-    Widget songCdImage(song){
+    Widget songCdImage(){
       return Container(
         height: screen.setHeight(600),
         width: screen.setWidth(600),
@@ -122,9 +118,11 @@ class _DiscPageState extends State<DiscPage> {
           ),
         ),
         child: ClipOval(
-          child: Image.network(song['image']??'http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
-            fit: BoxFit.cover,
-          ),
+          child: Provide<SongState>(builder: (context, child, counter){
+            return Image.network(counter.playlist[counter.currentIndex]['image']??'http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
+              fit: BoxFit.cover,
+            );
+          })
         ),
       );
     }
@@ -296,9 +294,7 @@ class _DiscPageState extends State<DiscPage> {
               return Container(
                 child: Column(
                   children: <Widget>[
-                    // Provide<SongState>(builder: (context, child, counter){
-                    //   return songCdImage(counter.playlist[counter.currentIndex]);
-                    // }),
+                    songCdImage(),
                     Container(
                       padding: EdgeInsets.only(top: screen.setHeight(60)),
                       child: Container(
@@ -317,35 +313,8 @@ class _DiscPageState extends State<DiscPage> {
                 ),
               );
             }else{
-              return Container(
-                child: FutureBuilder(
-                  future: _getLyric,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if(snapshot.hasData){
-                      Map data;
-                      try{
-                        data = json.decode(json.encode(snapshot.data));
-                      }catch(e){
-                        data = json.decode(snapshot.data.toString());
-                      }
-
-                      final String lyric = utf8.decode(base64Decode(data['lyric']));
-                      songState.setLyric(lyric);
-
-                      // return Provide<SongState>(builder: (context, child, counter){
-                      //   return Lyric(lyric: counter.lyric);
-                      // });
-
-                      return Container();
-                      
-                    }else{
-                      return Container();
-                    }
-                  },
-                ),
-              );
+              return Lyric();
             }
-            
           },
           itemCount: 2,
         ),
@@ -368,9 +337,9 @@ class _DiscPageState extends State<DiscPage> {
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            // Provide<SongState>(builder: (context, child, counter){
-            //   return bgImage(counter.playlist[counter.currentIndex]);
-            // }),
+            Provide<SongState>(builder: (context, child, counter){
+              return bgImage(counter.playlist[counter.currentIndex]);
+            }),
             
             gbFilter(),
             
@@ -380,17 +349,17 @@ class _DiscPageState extends State<DiscPage> {
                   child: Row(
                     children: <Widget>[
                       backArrow(),
-                      // Provide<SongState>(builder: (context, child, counter){
-                      //   return songTitle(counter.playlist[counter.currentIndex]);
-                      // }),
+                      Provide<SongState>(builder: (context, child, counter){
+                        return songTitle(counter.playlist[counter.currentIndex]);
+                      }),
                       
                       SizedBox(width: screen.setHeight(80)),
                     ],
                   ),
                 ),
-                // Provide<SongState>(builder: (context, child, counter){
-                //   return songSinger(counter.playlist[counter.currentIndex]);
-                // }),
+                Provide<SongState>(builder: (context, child, counter){
+                  return songSinger(counter.playlist[counter.currentIndex]);
+                }),
                 
                 SizedBox(height: screen.setHeight(50)),
                 Expanded(
@@ -408,7 +377,7 @@ class _DiscPageState extends State<DiscPage> {
             //   }),
             // ),
             // PlayMusic(mid: songState.playlist[songState.currentIndex]['mid']),
-            // musicPlay(),
+            musicPlay(),
           ],
         ),
       ),

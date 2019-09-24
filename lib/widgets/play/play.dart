@@ -33,8 +33,9 @@ class _PlayMusicState extends State<PlayMusic> {
       }
       String url = data['req_0']['data']['midurlinfo'][0]['purl'];
       String songsUrl = 'http://dl.stream.qqmusic.qq.com/$url';
-      print(songsUrl);
+      
       songState.playSongs(songsUrl);
+      
     });
     return Container();    
   }
