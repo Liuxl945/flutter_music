@@ -34,10 +34,10 @@ class _SongListState extends State<SongList> {
 
     Widget boxContainer({child,@required song, @required index}){
       return GestureDetector(
-        onTap: () {
+        onTap: () async{
 
           Provide.value<SongState>(context).selectPlay(item, index);
-          Provide.value<SongState>(context).reloadPlay();
+          await Provide.value<SongState>(context).reloadPlay();
 
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
 
