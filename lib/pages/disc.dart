@@ -1,9 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
+import 'package:flutter_music/provide/lyric.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provide/provide.dart';
@@ -25,6 +24,7 @@ class _DiscPageState extends State<DiscPage> {
   @override
   Widget build(BuildContext context){
     SongState songState = Provide.value<SongState>(context);
+    LyricState lyricState = Provide.value<LyricState>(context);
 
     // 背景图片
     Widget bgImage(song){
@@ -170,7 +170,7 @@ class _DiscPageState extends State<DiscPage> {
           child: Row(
             children: <Widget>[
               Container(
-                width: screen.setWidth(60),
+                width: screen.setWidth(70),
                 child: Text(
                   counter.position != null ? (counter.position?.toString()?.substring(2,7)) : '00:00',
                   style: TextStyle(
@@ -180,7 +180,7 @@ class _DiscPageState extends State<DiscPage> {
                 ),
               ),
               Container(
-                width: screen.setWidth(480),
+                width: screen.setWidth(460),
                 height: screen.setHeight(8),
                 decoration: BoxDecoration(
                 color: Colors.deepOrange,
@@ -190,7 +190,7 @@ class _DiscPageState extends State<DiscPage> {
                 ),
               ),
               Container(
-                width: screen.setWidth(60),
+                width: screen.setWidth(70),
                 alignment: Alignment.centerRight,
                 child: Text(
                   counter.position != null ? (counter.duration?.toString()?.substring(2,7)) : '00:00',
@@ -218,7 +218,9 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                  onPressed: null,
+                  onPressed: (){
+                    
+                  },
                   icon: Icon(Icons.copyright,
                   color: config.PrimaryColor,
                   size: screen.setSp(60),
@@ -230,7 +232,10 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                  onPressed: songState.prev,
+                  onPressed: (){
+                    songState.prev();
+                    lyricState.setLyric(songState.playlist[songState.currentIndex]['mid']);
+                  },
                   icon: Icon(Icons.skip_previous,
                   color: config.PrimaryColor,
                   size: screen.setSp(60),
@@ -241,7 +246,9 @@ class _DiscPageState extends State<DiscPage> {
             Container(
               width: screen.setWidth(214),
               child: IconButton(
-                onPressed: songState.togglePlaying,
+                onPressed: (){
+                  songState.togglePlaying();
+                },
                 icon: Icon(Icons.play_circle_outline,
                 color: config.PrimaryColor,
                 size: screen.setSp(80),
@@ -252,7 +259,10 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  onPressed: songState.next,
+                  onPressed: (){
+                    songState.next();
+                    lyricState.setLyric(songState.playlist[songState.currentIndex]['mid']);
+                  },
                   icon: Icon(Icons.skip_next,
                   color: config.PrimaryColor,
                   size: screen.setSp(60),
@@ -264,7 +274,9 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  onPressed: null,
+                  onPressed: (){
+
+                  },
                   icon: Icon(Icons.favorite_border,
                   color: config.PrimaryColor,
                   size: screen.setSp(60),
@@ -299,7 +311,8 @@ class _DiscPageState extends State<DiscPage> {
                       padding: EdgeInsets.only(top: screen.setHeight(60)),
                       child: Container(
                         width: screen.setWidth(600),
-                        child: Text('曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦曲：周杰伦',
+                        alignment: Alignment.center,
+                        child: Text(lyricState.lyric.length > 0 ? lyricState.lyric[lyricState.curNum]['txt'] : '' ,
                           style: TextStyle(
                             color: config.PrimaryFontColor,
                             fontSize: screen.setSp(28),
@@ -319,18 +332,6 @@ class _DiscPageState extends State<DiscPage> {
           itemCount: 2,
         ),
       );
-    }
-
-    Widget musicPlay(){
-      return Provide<SongState>(builder: (context, child, counter){
-        return Container(
-          child: Text(counter.playlist[counter.currentIndex]['mid'],
-            style: TextStyle(
-              color: Colors.white,
-            )
-          ),
-        );
-      });
     }
 
     return Scaffold(
@@ -371,13 +372,7 @@ class _DiscPageState extends State<DiscPage> {
                 SizedBox(height: screen.setHeight(100)),
               ],
             ),
-            // Container(
-            //   child: Provide<SongState>(builder: (context, child, counter){
-            //     return PlayMusic(mid: counter.playlist[counter.currentIndex]['mid']);
-            //   }),
-            // ),
-            // PlayMusic(mid: songState.playlist[songState.currentIndex]['mid']),
-            musicPlay(),
+            PlayMusic(),//播放音乐
           ],
         ),
       ),

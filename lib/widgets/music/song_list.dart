@@ -17,6 +17,7 @@ class SongList extends StatefulWidget {
 }
 
 class _SongListState extends State<SongList> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +26,7 @@ class _SongListState extends State<SongList> {
       ),
     );
   }
+  
 
   // 图标
   List<Widget> listViewChildren(List item){
@@ -32,9 +34,11 @@ class _SongListState extends State<SongList> {
 
     Widget boxContainer({child,@required song, @required index}){
       return GestureDetector(
-        onTap: (){
+        onTap: () {
 
           Provide.value<SongState>(context).selectPlay(item, index);
+          Provide.value<SongState>(context).reloadPlay();
+
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
 
         },

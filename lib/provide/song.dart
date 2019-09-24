@@ -38,21 +38,25 @@ int findIndex(List list, Map song){
   return index;
 }
 
+enum PlayerState { stopped, playing, paused }
+enum PlayerMode { sequence, loop, random }
 
 class SongState with ChangeNotifier{
   List playlist = [];//播放列表
   List sequenceList = [];//随机播放列表
-  int mode = playMode['sequence'];//播放模式
+  PlayerMode mode = PlayerMode.sequence;//播放模式
   int currentIndex = -1;//选中的歌曲列表下标
   bool playing = false;//是否播放
   bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
-  String lyric = '';
+  String audioUrl = '';
+  PlayerState playerState = PlayerState.stopped;
+
   Duration duration;
   Duration position;
 
   selectPlay(List list,int index){
-    if(mode == playMode['random']){
+    if(mode == PlayerMode.sequence){
       final List randomList = shuffle(list);
       playlist = randomList;
       index = findIndex(randomList,list[index]);
@@ -61,18 +65,64 @@ class SongState with ChangeNotifier{
     }
     currentIndex = index;
     fullScreen = true;
-    playing = true;
 
     notifyListeners();
   }
-  stopSongs(){
-    audioPlayer.stop();
+
+  getAudioUrl() async{
+    final val = await MusicApi.getMusicResult(playlist[currentIndex]['mid']);
+    print(val);
+    Map data;
+    try{
+      data = json.decode(val.toString());
+    }catch(e){
+      data = json.decode(json.encode(val));
+    }
+    String url = data['req_0']['data']['midurlinfo'][0]['purl'];
+    audioUrl = 'http://dl.stream.qqmusic.qq.com/$url';
+
     notifyListeners();
   }
 
-  playSongs(String songsUrl) async {
-    int result = await audioPlayer.play(songsUrl);
+  stop() async{
+    final result = await audioPlayer.stop();
+    
+    if (result == 1) {
+      playerState = PlayerState.stopped;
+      position = Duration();
+    }
+    notifyListeners();
+  }
+
+  reloadPlay() async{
+    if(playerState == PlayerState.stopped && audioUrl == ''){
+
+    }else{
+      final result = await audioPlayer.stop();
+      if(result == 1){
+        position = Duration();
+        playerState = PlayerState.stopped;
+        audioUrl = '';
+      }
+      notifyListeners();
+    }
+    
+  }
+
+  initAudioPlayer() {
+
+  }
+
+  play() async {
+    final playPosition = (position != null &&
+            duration != null &&
+            position.inMilliseconds > 0 &&
+            position.inMilliseconds < duration.inMilliseconds)
+        ? position
+        : null;
+    int result = await audioPlayer.play(audioUrl,position: playPosition);
     if(result == 1){
+      playerState = PlayerState.playing;
       // success
       audioPlayer.onDurationChanged.listen((value){
         duration = value;
@@ -84,22 +134,14 @@ class SongState with ChangeNotifier{
         notifyListeners();
       });
     }
-    // audioPlayer.resume();
     notifyListeners();
   }
 
-  setLyric() async{
-    final res = await MusicApi.getLyric(playlist[currentIndex]['mid']);
-    Map data;
-    try{
-      data = json.decode(res.toString());
-    }catch(e){
-      data = json.decode(json.encode(res));
+  pause() async{
+    final result = await audioPlayer.pause();
+    if(result == 1){
+      playerState = PlayerState.paused;
     }
-
-    final String newLyric = utf8.decode(base64Decode(data['lyric']));
-
-    lyric = newLyric;
     notifyListeners();
   }
 
@@ -113,36 +155,38 @@ class SongState with ChangeNotifier{
         index = playlist.length - 1 ;
       }
       currentIndex = index;
-      
-      if(!playing){
-        togglePlaying();
-      }
+      position = Duration();
+      stop();
+      play();
     }
-    setLyric();
     notifyListeners();
   }
 
   next(){
     print('next');
     if(playlist.length == 1){
-
+      // 循环播放
     }else{
       int index = currentIndex + 1;
       if(index == playlist.length){
         index = 0;
       }
       currentIndex = index;
-      
-      if(!playing){
-        togglePlaying();
-      }
+      position = Duration();
+      stop();
+      play();
     }
-    setLyric();
     notifyListeners();
   }
 
   togglePlaying(){
-    playing = !playing;
+    if(playerState == PlayerState.playing){
+      playerState = PlayerState.paused;
+    }else{
+      playerState = PlayerState.playing;
+    }
+    playerState == PlayerState.playing ? play() : pause();
+
     notifyListeners();
   }
 
