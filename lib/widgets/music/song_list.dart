@@ -35,9 +35,11 @@ class _SongListState extends State<SongList> {
     Widget boxContainer({child,@required song, @required index}){
       return GestureDetector(
         onTap: () async{
-
-          Provide.value<SongState>(context).selectPlay(item, index);
-          await Provide.value<SongState>(context).reloadPlay();
+          // 如果点击的是当前播放的歌曲则不暂停音乐
+          if(item[index]['id'] != Provide.value<SongState>(context).selectPlaying['id']){
+            Provide.value<SongState>(context).selectPlay(item, index);
+            await Provide.value<SongState>(context).reloadPlay();
+          }
 
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
+import 'package:flutter_music/plugin/fit.dart';
 
 
 int _stamp2int(final String stamp) {
@@ -53,7 +54,7 @@ List<Map> formatLyricFunc(lyric){
 
 int _findCurNum(time,_formatLyric){
   for (var i = 0; i < _formatLyric.length; i++) {
-    if (time <= _formatLyric[i]['time']) {
+    if (time <= _formatLyric[i]['time'] * 1000) {
       return i;
     }
   }
@@ -71,16 +72,18 @@ class LyricState with ChangeNotifier{
   int startStamp = 0; //时间戳
   int pauseStamp = 0;//暂停的时间
   Timer countdownTimer;
+  
 
   _playRest(){
     final line = lyric[curNum];
     final int delay = line['time']*1000  - (DateTime.now().microsecondsSinceEpoch - startStamp);
     final int absDelay = delay.abs();
-
+    
     countdownTimer = Timer(Duration(microseconds: absDelay),(){
       //执行滚动方法
       curNum++;
       curLine = curNum > 0 ? curNum - 1 : 0; 
+
       if(curNum < lyric.length && state == LyricMode.playing){
         _playRest();
       }
@@ -89,19 +92,14 @@ class LyricState with ChangeNotifier{
     notifyListeners();
   }
 
-  play({int startTime = 0,bool skipLast = false}){
+  play({int startTime = 0}){
     if(lyric.length == 0){
       return;
     }else{
       state = LyricMode.playing;
       curNum = _findCurNum(startTime,lyric);
       startStamp = DateTime.now().microsecondsSinceEpoch - startTime;
-
-      if (!skipLast) {
-        // 没传值
-        // curNum--;
-      }
-
+     
       if(curNum < lyric.length){
         countdownTimer?.cancel();
         _playRest();
@@ -117,16 +115,14 @@ class LyricState with ChangeNotifier{
       stop();
       pauseStamp = now;
     }else{
-      play(startTime:(pauseStamp ?? now) - (startStamp ?? now),skipLast:true);
+      play(startTime:(pauseStamp ?? now) - (startStamp ?? now));
       pauseStamp = 0;
     }
     notifyListeners();
   }
 
-
   stop(){
     state = LyricMode.stopped;
-    print(state);
     countdownTimer?.cancel();
     notifyListeners();
   }
@@ -145,5 +141,19 @@ class LyricState with ChangeNotifier{
     
     lyric = formatLyricFunc(newLyric);
     notifyListeners();
+  }
+
+  reset(){
+    curNum = 0;//当前播放的歌词索引
+    curLine = 0; //高亮歌词的索引
+    state = LyricMode.stopped; //是播放还是暂停
+    startStamp = 0; //时间戳
+    pauseStamp = 0;//暂停的时间
+  }
+
+  prevNext(mid) async{
+    await setLyric(mid);
+    reset();
+    play();
   }
 }

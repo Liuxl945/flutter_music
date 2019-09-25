@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/provide/lyric.dart';
@@ -11,24 +12,45 @@ class Lyric extends StatefulWidget {
 }
 
 class _LyricState extends State<Lyric> {
-  Timer _countdownTimer;
+
+  ScrollController scrollController;
 
   @override
-  void dispose() {
-    _countdownTimer?.cancel();
+  void initState() {
+    scrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() { 
+    scrollController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Provide<LyricState>(builder: (context, child, counter){
       
+      final double lineHeight = screen.setHeight(56);
+      int minInt = 6;
+      if(counter.curLine > minInt){
+        final double value = lineHeight* (counter.curLine - minInt);
+        // print(value);
+        Timer(Duration(milliseconds: 10),(){
+          scrollController.jumpTo(value);
+        });
+      }
+      
+
       return Container(
         padding: EdgeInsets.only(bottom: screen.setHeight(20)),
         child: ListView.builder(
+          controller: scrollController,
           itemCount: counter.lyric.length,
           itemBuilder: (BuildContext context, int index) {
             return Container(
+              height: screen.setHeight(56),
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(vertical: screen.setHeight(10)),
               child: Text(counter.lyric[index]['txt'],

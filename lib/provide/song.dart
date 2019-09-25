@@ -50,19 +50,21 @@ class SongState with ChangeNotifier{
   bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
   String audioUrl = '';
+  Map selectPlaying = {};
   PlayerState playerState = PlayerState.stopped;
 
   Duration duration;
   Duration position;
 
   selectPlay(List list,int index){
-    if(mode == PlayerMode.sequence){
+    if(mode == PlayerMode.random){
       final List randomList = shuffle(list);
       playlist = randomList;
       index = findIndex(randomList,list[index]);
     }else{
       playlist = list;
     }
+    selectPlaying = playlist[index];
     currentIndex = index;
     fullScreen = true;
 
@@ -90,6 +92,7 @@ class SongState with ChangeNotifier{
     if (result == 1) {
       playerState = PlayerState.stopped;
       position = Duration();
+      audioUrl = '';
     }
     notifyListeners();
   }
@@ -114,6 +117,11 @@ class SongState with ChangeNotifier{
   }
 
   play() async {
+
+    if(audioUrl == ''){
+      await getAudioUrl();
+    }
+
     final playPosition = (position != null &&
             duration != null &&
             position.inMilliseconds > 0 &&
@@ -145,7 +153,7 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
-  prev(){
+  prev() async{
     print('prev');
     if(playlist.length == 1){
 
@@ -156,13 +164,13 @@ class SongState with ChangeNotifier{
       }
       currentIndex = index;
       position = Duration();
-      stop();
-      play();
+      await stop();
+      await play();
     }
     notifyListeners();
   }
 
-  next(){
+  next() async{
     print('next');
     if(playlist.length == 1){
       // 循环播放
@@ -173,8 +181,8 @@ class SongState with ChangeNotifier{
       }
       currentIndex = index;
       position = Duration();
-      stop();
-      play();
+      await stop();
+      await play();
     }
     notifyListeners();
   }

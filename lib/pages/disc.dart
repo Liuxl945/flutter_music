@@ -232,9 +232,9 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                  onPressed: (){
-                    songState.prev();
-                    lyricState.setLyric(songState.playlist[songState.currentIndex]['mid']);
+                  onPressed: () async{
+                    await songState.prev();
+                    await lyricState.prevNext(songState.playlist[songState.currentIndex]['mid']);
                   },
                   icon: Icon(Icons.skip_previous,
                   color: config.PrimaryColor,
@@ -260,9 +260,9 @@ class _DiscPageState extends State<DiscPage> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  onPressed: (){
-                    songState.next();
-                    lyricState.setLyric(songState.playlist[songState.currentIndex]['mid']);
+                  onPressed: () async{
+                    await songState.next();
+                    await lyricState.prevNext(songState.playlist[songState.currentIndex]['mid']);
                   },
                   icon: Icon(Icons.skip_next,
                   color: config.PrimaryColor,
