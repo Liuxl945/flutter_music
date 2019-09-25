@@ -1,6 +1,8 @@
-import 'dart:math';
+
 
 main(List<String> args) {
-  
-  print(Random().nextDouble().floor());
+  final aa = DateTime.now().timeZoneName;
+  final bb = DateTime.now().microsecondsSinceEpoch;
+  print(aa);
+  print(bb);
 }

@@ -33,7 +33,7 @@ class _LyricState extends State<Lyric> {
               padding: EdgeInsets.symmetric(vertical: screen.setHeight(10)),
               child: Text(counter.lyric[index]['txt'],
                 style: TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, index == counter.curNum ? 1 : .5),
+                  color: Color.fromRGBO(255, 255, 255, index == counter.curLine ? 1 : .5),
                   fontSize: screen.setSp(28),
                 ),
               ),

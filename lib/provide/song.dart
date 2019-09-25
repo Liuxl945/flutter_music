@@ -71,7 +71,7 @@ class SongState with ChangeNotifier{
 
   getAudioUrl() async{
     final val = await MusicApi.getMusicResult(playlist[currentIndex]['mid']);
-    print(val);
+    
     Map data;
     try{
       data = json.decode(val.toString());

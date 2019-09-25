@@ -20,6 +20,7 @@ class _PlayMusicState extends State<PlayMusic> {
     await songState.getAudioUrl();
     await songState.play();
     await lyricState.setLyric(songState.playlist[songState.currentIndex]['mid']);
+    lyricState.play();
   }
 
   @override

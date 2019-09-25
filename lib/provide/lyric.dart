@@ -51,9 +51,6 @@ List<Map> formatLyricFunc(lyric){
   return newLyric;
 }
 
-final int statePause = 0;
-final int statePlaying = 1;
-
 int _findCurNum(time,_formatLyric){
   for (var i = 0; i < _formatLyric.length; i++) {
     if (time <= _formatLyric[i]['time']) {
@@ -62,42 +59,78 @@ int _findCurNum(time,_formatLyric){
   }
   return _formatLyric.length - 1;
 }
+
+enum LyricMode { stopped, playing }
+
 class LyricState with ChangeNotifier{
+
   List<Map> lyric = [];
   int curNum = 0;//当前播放的歌词索引
-  int state = 0; //是播放还是暂停
-  int startStamp; //时间戳
-  int pauseStamp;//暂停的时间
+  int curLine = 0; //高亮歌词的索引
+  LyricMode state = LyricMode.stopped; //是播放还是暂停
+  int startStamp = 0; //时间戳
+  int pauseStamp = 0;//暂停的时间
   Timer countdownTimer;
 
-  
   _playRest(){
     final line = lyric[curNum];
-    final int delay = line['time'] - (DateTime.now().microsecondsSinceEpoch - startStamp);
+    final int delay = line['time']*1000  - (DateTime.now().microsecondsSinceEpoch - startStamp);
+    final int absDelay = delay.abs();
 
-    countdownTimer = Timer(Duration(milliseconds: delay),(){
+    countdownTimer = Timer(Duration(microseconds: absDelay),(){
       //执行滚动方法
       curNum++;
-      
-      if(curNum < lyric.length && state == statePlaying){
+      curLine = curNum > 0 ? curNum - 1 : 0; 
+      if(curNum < lyric.length && state == LyricMode.playing){
         _playRest();
       }
     });
+
+    notifyListeners();
   }
 
-  play({int startTime = 0}){
+  play({int startTime = 0,bool skipLast = false}){
     if(lyric.length == 0){
       return;
     }else{
-      state = statePlaying;
+      state = LyricMode.playing;
       curNum = _findCurNum(startTime,lyric);
       startStamp = DateTime.now().microsecondsSinceEpoch - startTime;
 
+      if (!skipLast) {
+        // 没传值
+        // curNum--;
+      }
+
       if(curNum < lyric.length){
+        countdownTimer?.cancel();
         _playRest();
       }
+
     }
+    notifyListeners();
   }
+
+  togglePlaying(){
+    int now = DateTime.now().microsecondsSinceEpoch;
+    if(state == LyricMode.playing){
+      stop();
+      pauseStamp = now;
+    }else{
+      play(startTime:(pauseStamp ?? now) - (startStamp ?? now),skipLast:true);
+      pauseStamp = 0;
+    }
+    notifyListeners();
+  }
+
+
+  stop(){
+    state = LyricMode.stopped;
+    print(state);
+    countdownTimer?.cancel();
+    notifyListeners();
+  }
+
 
   setLyric(mid) async{
     final res = await MusicApi.getLyric(mid);

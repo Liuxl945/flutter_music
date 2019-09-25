@@ -248,6 +248,7 @@ class _DiscPageState extends State<DiscPage> {
               child: IconButton(
                 onPressed: (){
                   songState.togglePlaying();
+                  lyricState.togglePlaying();
                 },
                 icon: Icon(Icons.play_circle_outline,
                 color: config.PrimaryColor,
@@ -312,14 +313,17 @@ class _DiscPageState extends State<DiscPage> {
                       child: Container(
                         width: screen.setWidth(600),
                         alignment: Alignment.center,
-                        child: Text(lyricState.lyric.length > 0 ? lyricState.lyric[lyricState.curNum]['txt'] : '' ,
-                          style: TextStyle(
-                            color: config.PrimaryFontColor,
-                            fontSize: screen.setSp(28),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        child: Provide<LyricState>(builder: (context, child, counter){
+                          
+                          return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '' ,
+                            style: TextStyle(
+                              color: config.PrimaryFontColor,
+                              fontSize: screen.setSp(28),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        }),
                       ),
                     ),
                   ],
