@@ -51,7 +51,7 @@ class _RankingPageState extends State<RankingPage> {
           );
         }else{
           return Container(
-            height: screen.setHeight(300),
+            height: screen.setWidth(300),
             child: Center(
               child: Text('暂时排行数据'),
             ),
@@ -68,6 +68,7 @@ class _RankingPageState extends State<RankingPage> {
         Application.router.navigateTo(context, '${Routes.rankingDetail}?id=${rank['id']}', transition: TransitionType.fadeIn);
       },
       child: Container(
+        
         margin: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(40), screen.setWidth(40), isLast ? screen.setWidth(40): 0),
         color: config.BaseLightColor,
         child: Flex(
@@ -89,7 +90,7 @@ class _RankingPageState extends State<RankingPage> {
       placeholder:kTransparentImage,
       image:rank['picUrl'] ?? 'http://y.gtimg.cn/music/photo_new/T003R300x300M000003VJcf34ZETOl.jpg',
       fit: BoxFit.cover,
-      width: screen.setHeight(200),
+      width: screen.setWidth(200),
       height: screen.setWidth(200),
     );
   }
@@ -106,14 +107,14 @@ class _RankingPageState extends State<RankingPage> {
 
       if(index < rank['songList'].length){
         list.add(
-          SizedBox(height: screen.setHeight(24))
+          SizedBox(height: screen.setWidth(24))
         );
         index++;
       }
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: screen.setHeight(30)),
+      padding: EdgeInsets.symmetric(horizontal: screen.setWidth(30)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: list

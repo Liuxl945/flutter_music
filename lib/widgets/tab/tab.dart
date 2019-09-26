@@ -36,7 +36,7 @@ class TabNav extends StatelessWidget {
     return Expanded(
       flex:1,
       child: Container(
-        height: screen.setHeight(88),
+        height: screen.setWidth(88),
         decoration: BoxDecoration(
           color: config.BaseColor,
         ),
@@ -67,10 +67,10 @@ class TabNav extends StatelessWidget {
                 color: index == selectIndex ? config.PrimaryColor : config.PrimaryFontColor,
               ),
             ),
-            SizedBox(height: screen.setHeight(10)),
+            SizedBox(height: screen.setWidth(10)),
             Container(
-              height: screen.setHeight(4),
-              width: screen.setHeight(62),
+              height: screen.setWidth(4),
+              width: screen.setWidth(62),
               color: index == selectIndex ? config.PrimaryColor : config.BaseColor,
             ),
           ],

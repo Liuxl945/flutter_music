@@ -116,11 +116,11 @@ class _SearchPageState extends State<SearchPage> {
   // 搜索框
   Widget searchBar(){
     return Container(
-      margin: EdgeInsets.all(screen.setHeight(40)),
-      padding: EdgeInsets.symmetric(vertical: screen.setHeight(18),horizontal: screen.setHeight(10)),
+      margin: EdgeInsets.all(screen.setWidth(40)),
+      padding: EdgeInsets.symmetric(vertical: screen.setWidth(18),horizontal: screen.setWidth(10)),
       decoration: BoxDecoration(
         color: config.BaseLightColor,
-        borderRadius: BorderRadius.all(Radius.circular(screen.setHeight(12))),
+        borderRadius: BorderRadius.all(Radius.circular(screen.setWidth(12))),
       ),
       child: Row(
         children: <Widget>[
@@ -177,7 +177,7 @@ class _SearchPageState extends State<SearchPage> {
             children: <Widget>[
               hotkeyTitle(),
               hotkeyContainer(hotkeyList),
-              SizedBox(height: screen.setHeight(20)),
+              SizedBox(height: screen.setWidth(20)),
               Offstage(
                 offstage: false,
                 child: searchHistory(),
@@ -195,7 +195,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget hotkeyTitle(){
     return Container(
-      padding: EdgeInsets.only(bottom: screen.setHeight(40),left: screen.setHeight(40),right: screen.setHeight(40)),
+      padding: EdgeInsets.only(bottom: screen.setWidth(40),left: screen.setWidth(40),right: screen.setWidth(40)),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text('热门搜索',
@@ -220,7 +220,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal:  screen.setHeight(40)),
+      margin: EdgeInsets.symmetric(horizontal:  screen.setWidth(40)),
       child: Wrap(
         direction: Axis.horizontal,
         children: hotList,
@@ -237,12 +237,12 @@ class _SearchPageState extends State<SearchPage> {
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: screen.setWidth(20),vertical: screen.setHeight(10)),
+        padding: EdgeInsets.symmetric(horizontal: screen.setWidth(20),vertical: screen.setWidth(10)),
         height: screen.setWidth(48),
         margin: EdgeInsets.only(right: screen.setWidth(30),bottom: screen.setWidth(30)),
         decoration: BoxDecoration(
           color: config.BaseLightColor,
-          borderRadius: BorderRadius.all(Radius.circular(screen.setHeight(10))),
+          borderRadius: BorderRadius.all(Radius.circular(screen.setWidth(10))),
         ),
         child: Text(item['k'],
           style: TextStyle(
@@ -289,7 +289,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget historyTitle(){
     return Container(
-      padding: EdgeInsets.only(bottom: screen.setHeight(20)),
+      padding: EdgeInsets.only(bottom: screen.setWidth(20)),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -326,7 +326,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget historyItem(name){
     return Container(
-      padding: EdgeInsets.symmetric(vertical: screen.setHeight(20)),
+      padding: EdgeInsets.symmetric(vertical: screen.setWidth(20)),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -393,12 +393,13 @@ class _SearchPageState extends State<SearchPage> {
         
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: screen.setHeight(20),horizontal: screen.setWidth(40)),
+        color: Colors.transparent,
+        padding: EdgeInsets.symmetric(vertical: screen.setWidth(20),horizontal: screen.setWidth(40)),
         child: Row(
           children: <Widget>[
             Container(
               width: screen.setWidth(32),
-              height: screen.setHeight(32),
+              height: screen.setWidth(32),
               child: Icon(item['type'] != null ? Icons.perm_identity : Icons.music_note ,color: config.PrimaryFontColor,size: screen.setSp(30)),
               margin: EdgeInsets.only(right: screen.setWidth(32)),
             ),

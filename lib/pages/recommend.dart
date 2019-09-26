@@ -64,7 +64,7 @@ class _RecommendPageState extends State<RecommendPage> {
           return swiperRender(swiperList);
         }else{
           return Container(
-            height: screen.setHeight(300),
+            height: screen.setWidth(300),
             child: Center(
               child: Text('暂时没有轮播图数据'),
             ),
@@ -76,7 +76,7 @@ class _RecommendPageState extends State<RecommendPage> {
 
   Widget swiperRender(swiperList){
     return Container(
-      height: screen.setHeight(300),
+      height: screen.setWidth(300),
       child: Swiper(
         itemBuilder: (BuildContext context, int index){
           return Hero(
@@ -108,7 +108,7 @@ class _RecommendPageState extends State<RecommendPage> {
     return Column(
       children: <Widget>[
         Container(
-          height: screen.setHeight(130),
+          height: screen.setWidth(130),
           child: Center(
             child: Text('热门歌曲推荐',
               style: TextStyle(
@@ -163,7 +163,7 @@ class _RecommendPageState extends State<RecommendPage> {
       },
       child: Container(
         color: config.BaseColor,
-        height: screen.setHeight(160),
+        height: screen.setWidth(160),
         padding: EdgeInsets.fromLTRB(screen.setWidth(40), 0, screen.setWidth(40), screen.setWidth(40)),
         child: Flex(
           direction:Axis.horizontal,
@@ -181,7 +181,7 @@ class _RecommendPageState extends State<RecommendPage> {
       placeholder:kTransparentImage,
       image:song['imgurl'],
       fit: BoxFit.cover,
-      width: screen.setHeight(120),
+      width: screen.setWidth(120),
       height: screen.setWidth(120),
     );
   }
@@ -199,7 +199,7 @@ class _RecommendPageState extends State<RecommendPage> {
               color: Colors.white,
               fontSize: screen.setSp(28),
             )),
-            SizedBox(height: screen.setHeight(26)),
+            SizedBox(height: screen.setWidth(26)),
             Text(song['dissname'] ?? '',style:TextStyle(
               color: config.PrimaryFontColor,
               fontSize: screen.setSp(24),

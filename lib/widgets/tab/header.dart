@@ -23,11 +23,11 @@ class Header extends StatelessWidget {
               Application.router.navigateTo(context, Routes.user,transition: TransitionType.fadeIn);
             },
             child: Container(
-              height: screen.setHeight(88),
+              height: screen.setWidth(88),
               width: screen.setWidth(88),
               child: Icon(
                 Icons.perm_identity,
-                size: screen.setHeight(44),
+                size: screen.setWidth(44),
                 color: config.PrimaryColor,
               ),
             ),
@@ -45,9 +45,9 @@ class Header extends StatelessWidget {
         // Image.asset(
         //   'assets/image/logo3x.png',
         //   width: screen.setWidth(60),
-        //   height: screen.setHeight(64),
+        //   height: screen.setWidth(64),
         // ),
-        SizedBox(width: screen.setHeight(10)),
+        SizedBox(width: screen.setWidth(10)),
         Text(
           'Chicken Music',
           style: TextStyle(

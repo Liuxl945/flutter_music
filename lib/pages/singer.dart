@@ -28,8 +28,8 @@ class _SingerPageState extends State<SingerPage> {
   final hotName = "热门";
   final hotSingerLength = 20; //热门歌手长度
   int defaultIndex = 0;
-  final double suspensionHeight = screen.setHeight(60);
-  final double itemHeight = screen.setHeight(140);
+  final double suspensionHeight = screen.setWidth(60);
+  final double itemHeight = screen.setWidth(140);
   double opacity = 1; //IOS下下滑隐藏标题
   
   @override
@@ -91,7 +91,7 @@ class _SingerPageState extends State<SingerPage> {
         n += (singerData[i]['items'].length).toInt();
       }
     }
-    return n * itemHeight + (index) * (suspensionHeight + screen.setHeight(40));
+    return n * itemHeight + (index) * (suspensionHeight + screen.setWidth(40));
   }
 
 
@@ -204,7 +204,7 @@ class _SingerPageState extends State<SingerPage> {
           return Column(
             children: <Widget>[
               singerTitle(singerData[index]['title']),
-              SizedBox(height: screen.setHeight(40)),
+              SizedBox(height: screen.setWidth(40)),
               singerListItem(singerData[index]['items']),
             ],
           );
@@ -225,7 +225,7 @@ class _SingerPageState extends State<SingerPage> {
   Widget singerTitle(name){
     return Container(
       width: screen.setWidth(750),
-      height: screen.setHeight(60),
+      height: screen.setWidth(60),
       color: config.BaseLightColor,
       padding: EdgeInsets.only(left: screen.setWidth(40)),
       alignment: Alignment.centerLeft,
@@ -259,7 +259,8 @@ class _SingerPageState extends State<SingerPage> {
         Application.router.navigateTo(context, '${Routes.singerDetail}?id=${singer['id']}',transition: TransitionType.fadeIn);
       },
       child: Container(
-        padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setHeight(40)),
+        color: Colors.transparent,
+        padding: EdgeInsets.only(left: screen.setWidth(60),bottom: screen.setWidth(40)),
         child: Row(
           children: <Widget>[
             singerAvatar(singer),
@@ -276,13 +277,13 @@ class _SingerPageState extends State<SingerPage> {
   Widget singerAvatar(singer){
     return ClipOval(
       child: Container(
+        height: screen.setWidth(100),
+        width: screen.setWidth(100),
         child: FadeInImage.memoryNetwork(
           placeholder:kTransparentImage,
           image: singer['avatar'] ?? 'https://y.gtimg.cn/music/photo_new/T001R150x150M000002J4UUk29y8BY.jpg?max_age=2592000',
           fit: BoxFit.cover,
         ),
-        height: screen.setHeight(100),
-        width: screen.setWidth(100),
       ),
     );
   }
@@ -344,20 +345,20 @@ class _IndexBarState extends State<IndexBar> {
         RenderBox rb = context.findRenderObject();
         int top = rb.localToGlobal(Offset.zero).dy.toInt();
 
-        double offsetTop = offset - top - screen.setHeight(20);//减去上部padding的高度
-        _triggerTouch((offsetTop / screen.setHeight(40)).floor());
+        double offsetTop = offset - top - screen.setWidth(20);//减去上部padding的高度
+        _triggerTouch((offsetTop / screen.setWidth(40)).floor());
       },
       onVerticalDragUpdate:(DragUpdateDetails details) {
         int offset = details.globalPosition.dy.toInt();
         RenderBox rb = context.findRenderObject();
         int top = rb.localToGlobal(Offset.zero).dy.toInt();
-        double offsetTop = offset - top - screen.setHeight(20);//减去上部padding的高度
-        int index = (offsetTop / screen.setHeight(40)).floor() <=0 ? 0: (offsetTop / screen.setHeight(40)).floor();
+        double offsetTop = offset - top - screen.setWidth(20);//减去上部padding的高度
+        int index = (offsetTop / screen.setWidth(40)).floor() <=0 ? 0: (offsetTop / screen.setWidth(40)).floor();
         _triggerTouch(index.clamp(.0, children.length - 1));
       },
       child: Container(
         width: screen.setWidth(40),
-        padding: EdgeInsets.symmetric(vertical: screen.setHeight(20)),
+        padding: EdgeInsets.symmetric(vertical: screen.setWidth(20)),
         decoration: BoxDecoration(
           color: Color.fromRGBO(0, 0, 0, .3),
           borderRadius: BorderRadius.all(
@@ -373,7 +374,7 @@ class _IndexBarState extends State<IndexBar> {
   }
   Widget barText(String name,int index){
     return Container(
-      height: screen.setHeight(40),
+      height: screen.setWidth(40),
       alignment: Alignment.center,
       child: Text(
         name.substring(0,1),

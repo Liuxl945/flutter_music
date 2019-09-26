@@ -17,8 +17,8 @@ class MusicList extends StatefulWidget {
 
 class _MusicListState extends State<MusicList> {
   ScrollController scrollController = ScrollController();
-  double imageHeight = screen.setHeight(525);
-  double appbarHeight = screen.setHeight(88);
+  double imageHeight = screen.setWidth(525);
+  double appbarHeight = screen.setWidth(88);
   bool opacity = false; 
   
   
@@ -154,7 +154,7 @@ class _MusicListState extends State<MusicList> {
   // 随机播放按钮
   Widget playBtn(){
     return Positioned(
-      top: screen.setHeight(421),
+      top: screen.setWidth(421),
       left: screen.setWidth(240),
       child: Container(
         width: screen.setWidth(270),

@@ -9,9 +9,7 @@ class Fit {
   setWidth(double number){
     return getInstance.setWidth(number);
   }
-  setHeight(double number){
-    return getInstance.setHeight(number);
-  }
+  
   setSp(double number){
     return getInstance.setSp(number);
   }

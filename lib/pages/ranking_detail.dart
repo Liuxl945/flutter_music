@@ -13,8 +13,8 @@ class RankingDetail extends StatefulWidget {
 }
 
 class _RankingDetailState extends State<RankingDetail> {
-  double imageHeight = screen.setHeight(525);
-  double appbarHeight = screen.setHeight(88);
+  double imageHeight = screen.setWidth(525);
+  double appbarHeight = screen.setWidth(88);
   var _getMusicList;
 
   @override

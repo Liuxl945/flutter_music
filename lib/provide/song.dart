@@ -50,7 +50,7 @@ class SongState with ChangeNotifier{
   bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
   String audioUrl = '';
-  Map selectPlaying;//当前播放的歌曲
+  Map selectPlaying = {};//当前播放的歌曲
   PlayerState playerState = PlayerState.stopped;
 
   Duration duration;

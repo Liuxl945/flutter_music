@@ -8,7 +8,6 @@ import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_music/widgets/play/rotate_avatar.dart';
 import 'package:provide/provide.dart';
-import 'package:flutter_music/variable.dart' as config;
 
 class MiniPlay extends StatelessWidget {
   const MiniPlay({Key key}) : super(key: key);
@@ -22,7 +21,7 @@ class MiniPlay extends StatelessWidget {
         children: <Widget>[
           Provide<SongState>(builder: (context, child, counter){
             
-            return Text( counter.selectPlaying != null ? counter.selectPlaying['name'] : '',
+            return Text( counter.selectPlaying.toString() == '{}' ? '' : counter.selectPlaying['name'] ,
               style: TextStyle(
                 fontSize: screen.setSp(28),
                 color: Colors.white,
@@ -31,7 +30,7 @@ class MiniPlay extends StatelessWidget {
           }),
           
           SizedBox(
-            height: screen.setHeight(10),
+            height: screen.setWidth(10),
           ),
           Provide<LyricState>(builder: (context, child, counter){
             return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '',
@@ -51,7 +50,7 @@ class MiniPlay extends StatelessWidget {
     return Row(
       children: <Widget>[
         Container(
-          height: screen.setHeight(80),
+          height: screen.setWidth(80),
           width: screen.setWidth(80),
           child: RotateAvatar(),
         ),
@@ -66,7 +65,7 @@ class MiniPlay extends StatelessWidget {
           },
           child: Container(
             width: screen.setWidth(100),
-            height: screen.setHeight(80),
+            height: screen.setWidth(80),
             child: Icon(
               Icons.play_circle_outline,
               color: config.PrimaryColor,
@@ -81,7 +80,7 @@ class MiniPlay extends StatelessWidget {
         //   },
         //   child: Container(
         //     width: screen.setWidth(100),
-        //     height: screen.setHeight(80),
+        //     height: screen.setWidth(80),
         //     color: Colors.deepOrange,
         //     child: Icon(
         //       Icons.airline_seat_legroom_extra,
@@ -107,8 +106,8 @@ class MiniPlay extends StatelessWidget {
           },
           child: Container(
             color: Color.fromRGBO(51, 51, 51, 1),
-            padding: EdgeInsets.fromLTRB(screen.setHeight(40), screen.setHeight(20), screen.setHeight(20), screen.setHeight(20)),
-            height: screen.setHeight(120),
+            padding: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(20), screen.setWidth(20), screen.setWidth(20)),
+            height: screen.setWidth(120),
             child: container(songState,lyricState),
           ),
         ),

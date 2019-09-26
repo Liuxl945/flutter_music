@@ -18,8 +18,8 @@ class SingerDetail extends StatefulWidget {
 }
 
 class _SingerDetailState extends State<SingerDetail> {
-  double imageHeight = screen.setHeight(525);
-  double appbarHeight = screen.setHeight(88);
+  double imageHeight = screen.setWidth(525);
+  double appbarHeight = screen.setWidth(88);
   var _getSingerDetail;
 
   @override

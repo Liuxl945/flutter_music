@@ -35,6 +35,7 @@ class _SongListState extends State<SongList> {
     Widget boxContainer({child,@required song, @required index}){
       return GestureDetector(
         onTap: () async{
+          
           // 如果点击的是当前播放的歌曲则不暂停音乐
           if(item[index]['id'] != Provide.value<SongState>(context).selectPlaying['id']){
             Provide.value<SongState>(context).selectPlay(item, index);
@@ -48,7 +49,7 @@ class _SongListState extends State<SongList> {
           color: Colors.transparent,
           padding: EdgeInsets.symmetric(horizontal: screen.setWidth(60)),
           alignment: Alignment.centerLeft,
-          height: screen.setHeight(128),
+          height: screen.setWidth(128),
           child: child,
         ),
       );
@@ -100,7 +101,7 @@ class _SongListState extends State<SongList> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: screen.setHeight(20)),
+        SizedBox(height: screen.setWidth(20)),
         Text(
           '${song['singer']}.${song['album']}',
           style: TextStyle(

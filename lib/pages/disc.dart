@@ -68,7 +68,7 @@ class _DiscPageState extends State<DiscPage> {
         },
         child: Container(
           width: screen.setWidth(80),
-          height: screen.setHeight(80),
+          height: screen.setWidth(80),
           child: Icon(Icons.expand_more,size: screen.setSp(64),color: config.PrimaryColor),
         ),
       );
@@ -108,7 +108,7 @@ class _DiscPageState extends State<DiscPage> {
     // 歌曲CD图片
     Widget songCdImage(){
       return Container(
-        height: screen.setHeight(600),
+        height: screen.setWidth(600),
         width: screen.setWidth(600),
         padding: EdgeInsets.all(screen.setWidth(20)),
         decoration: BoxDecoration(
@@ -125,13 +125,13 @@ class _DiscPageState extends State<DiscPage> {
     // 歌词CD切换控制器
     Widget lyricImageBar(int index){
       return Container(
-        height: screen.setHeight(16),
+        height: screen.setWidth(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
               width: screen.setWidth(index == 0 ? 40: 16),
-              height: screen.setHeight(16),
+              height: screen.setWidth(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(40),
@@ -142,7 +142,7 @@ class _DiscPageState extends State<DiscPage> {
             SizedBox(width: screen.setWidth(20)),
             Container(
               width: screen.setWidth(index == 1 ? 40: 16),
-              height: screen.setHeight(16),
+              height: screen.setWidth(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(40),
@@ -160,7 +160,7 @@ class _DiscPageState extends State<DiscPage> {
     Widget scrollBar(){
       return Provide<SongState>(builder: (context, child, counter){
         return Container(
-          height: screen.setHeight(100),
+          height: screen.setWidth(100),
           width: screen.setWidth(600),
           child: Row(
             children: <Widget>[
@@ -176,7 +176,7 @@ class _DiscPageState extends State<DiscPage> {
               ),
               Container(
                 width: screen.setWidth(460),
-                height: screen.setHeight(8),
+                height: screen.setWidth(8),
                 // decoration: BoxDecoration(
                 // color: Colors.deepOrange,
                 //   borderRadius: BorderRadius.all(
@@ -185,7 +185,7 @@ class _DiscPageState extends State<DiscPage> {
                 // ),
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    trackHeight:screen.setHeight(8),
+                    trackHeight:screen.setWidth(8),
                   ),
                   
                   child: Provide<SongState>(builder: (context, child, counter){
@@ -227,7 +227,7 @@ class _DiscPageState extends State<DiscPage> {
     // 控制按钮
     Widget controlBtn(){
       return Container(
-        height: screen.setHeight(80),
+        height: screen.setWidth(80),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -326,7 +326,7 @@ class _DiscPageState extends State<DiscPage> {
                   children: <Widget>[
                     songCdImage(),
                     Container(
-                      padding: EdgeInsets.only(top: screen.setHeight(60)),
+                      padding: EdgeInsets.only(top: screen.setWidth(60)),
                       child: Container(
                         width: screen.setWidth(600),
                         alignment: Alignment.center,
@@ -375,7 +375,7 @@ class _DiscPageState extends State<DiscPage> {
                         return songTitle(counter.playlist[counter.currentIndex]);
                       }),
                       
-                      SizedBox(width: screen.setHeight(80)),
+                      SizedBox(width: screen.setWidth(80)),
                     ],
                   ),
                 ),
@@ -383,14 +383,14 @@ class _DiscPageState extends State<DiscPage> {
                   return songSinger(counter.playlist[counter.currentIndex]);
                 }),
                 
-                SizedBox(height: screen.setHeight(50)),
+                SizedBox(height: screen.setWidth(50)),
                 Expanded(
                   child:cdLyricSwiper(),
                 ),
                 lyricImageBar(_scrollIndex),
                 scrollBar(),
                 controlBtn(),
-                SizedBox(height: screen.setHeight(100)),
+                SizedBox(height: screen.setWidth(100)),
               ],
             ),
             PlayMusic(),//播放音乐
