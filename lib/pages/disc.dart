@@ -165,7 +165,7 @@ class _DiscPageState extends State<DiscPage> {
           child: Row(
             children: <Widget>[
               Container(
-                width: screen.setWidth(70),
+                width: screen.setWidth(64),
                 child: Text(
                   counter.position != null ? (counter.position?.toString()?.substring(2,7)) : '00:00',
                   style: TextStyle(
@@ -175,7 +175,7 @@ class _DiscPageState extends State<DiscPage> {
                 ),
               ),
               Container(
-                width: screen.setWidth(460),
+                width: screen.setWidth(472),
                 height: screen.setWidth(8),
                 // decoration: BoxDecoration(
                 // color: Colors.deepOrange,
@@ -206,7 +206,7 @@ class _DiscPageState extends State<DiscPage> {
                 
               ),
               Container(
-                width: screen.setWidth(70),
+                width: screen.setWidth(64),
                 alignment: Alignment.centerRight,
                 child: Text(
                   counter.position != null ? (counter.duration?.toString()?.substring(2,7)) : '00:00',

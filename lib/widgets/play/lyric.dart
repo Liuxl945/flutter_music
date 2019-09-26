@@ -40,6 +40,10 @@ class _LyricState extends State<Lyric> {
         Timer(Duration(milliseconds: 10),(){
           scrollController.jumpTo(value);
         });
+      }else{
+        Timer(Duration(milliseconds: 10),(){
+          scrollController.jumpTo(0);
+        });
       }
       
 

@@ -71,6 +71,7 @@ class MiniPlay extends StatelessWidget {
             lyricState.togglePlaying();
           },
           child: Container(
+            color: Colors.transparent,
             width: screen.setWidth(100),
             height: screen.setWidth(80),
             child: Icon(
