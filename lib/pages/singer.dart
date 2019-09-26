@@ -179,7 +179,7 @@ class _SingerPageState extends State<SingerPage> {
           Align(
             alignment: Alignment.centerRight,
             child: Container(
-              width: screen.setWidth(40),
+              width: screen.setWidth(36),
               alignment: Alignment.center,
               child: IndexBar(
                 data:singerData,
@@ -313,6 +313,9 @@ class IndexBar extends StatefulWidget {
 
 class _IndexBarState extends State<IndexBar> {
   List<Widget> children = [];
+
+  final double itemWith = screen.setWidth(36);
+
   void _createWidget(){
     children.clear();
 
@@ -346,18 +349,18 @@ class _IndexBarState extends State<IndexBar> {
         int top = rb.localToGlobal(Offset.zero).dy.toInt();
 
         double offsetTop = offset - top - screen.setWidth(20);//减去上部padding的高度
-        _triggerTouch((offsetTop / screen.setWidth(40)).floor());
+        _triggerTouch((offsetTop / itemWith).floor());
       },
       onVerticalDragUpdate:(DragUpdateDetails details) {
         int offset = details.globalPosition.dy.toInt();
         RenderBox rb = context.findRenderObject();
         int top = rb.localToGlobal(Offset.zero).dy.toInt();
         double offsetTop = offset - top - screen.setWidth(20);//减去上部padding的高度
-        int index = (offsetTop / screen.setWidth(40)).floor() <=0 ? 0: (offsetTop / screen.setWidth(40)).floor();
+        int index = (offsetTop / itemWith).floor() <=0 ? 0: (offsetTop / itemWith).floor();
         _triggerTouch(index.clamp(.0, children.length - 1));
       },
       child: Container(
-        width: screen.setWidth(40),
+        width: itemWith,
         padding: EdgeInsets.symmetric(vertical: screen.setWidth(20)),
         decoration: BoxDecoration(
           color: Color.fromRGBO(0, 0, 0, .3),
@@ -374,7 +377,7 @@ class _IndexBarState extends State<IndexBar> {
   }
   Widget barText(String name,int index){
     return Container(
-      height: screen.setWidth(40),
+      height: itemWith,
       alignment: Alignment.center,
       child: Text(
         name.substring(0,1),

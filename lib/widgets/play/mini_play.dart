@@ -19,27 +19,34 @@ class MiniPlay extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Provide<SongState>(builder: (context, child, counter){
-            
-            return Text( counter.selectPlaying.toString() == '{}' ? '' : counter.selectPlaying['name'] ,
-              style: TextStyle(
-                fontSize: screen.setSp(28),
-                color: Colors.white,
-              ),
-            );
-          }),
-          
-          SizedBox(
-            height: screen.setWidth(10),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(top: screen.setWidth(6)),
+              child: Provide<SongState>(builder: (context, child, counter){
+                return Text( counter.selectPlaying.toString() == '{}' ? '' : counter.selectPlaying['name'] ,
+                  style: TextStyle(
+                    fontSize: screen.setSp(28),
+                    color: Colors.white,
+                  ),
+                );
+              }),
+            ),
           ),
-          Provide<LyricState>(builder: (context, child, counter){
-            return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '',
-              style: TextStyle(
-                fontSize: screen.setSp(24),
-                color: config.LightFontColor,
-              ),
-            );
-          }),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(bottom: screen.setWidth(6)),
+              alignment: Alignment.bottomLeft,
+              child: Provide<LyricState>(builder: (context, child, counter){
+                return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '',
+                  style: TextStyle(
+                    fontSize: screen.setSp(24),
+                    color: config.LightFontColor,
+                  ),
+                );
+              }),
+            ),
+          ),
+          
         ],
       ),
     );
@@ -106,8 +113,8 @@ class MiniPlay extends StatelessWidget {
           },
           child: Container(
             color: Color.fromRGBO(51, 51, 51, 1),
-            padding: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(20), screen.setWidth(20), screen.setWidth(20)),
-            height: screen.setWidth(120),
+            padding: EdgeInsets.fromLTRB(screen.setWidth(40), screen.setWidth(10), screen.setWidth(20), screen.setWidth(10)),
+            height: screen.setWidth(100),
             child: container(songState,lyricState),
           ),
         ),

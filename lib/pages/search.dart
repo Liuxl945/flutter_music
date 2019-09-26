@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/provide/singer.dart';
+import 'package:flutter_music/provide/song.dart';
 import 'package:flutter_music/route/application.dart';
 import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/storage/search_history.dart' as storage;
@@ -379,7 +380,8 @@ class _SearchPageState extends State<SearchPage> {
   // 单个搜索详情
   Widget searchItem(Map item){
     return GestureDetector(
-      onTap: (){
+      onTap: () async{
+        
         if(item['singerid'] != null){
 
           Provide.value<Singer>(context).setSinger(singer(item));
@@ -387,7 +389,12 @@ class _SearchPageState extends State<SearchPage> {
           Application.router.navigateTo(context, '${Routes.singerDetail}?id=${item['singermid']}',transition: TransitionType.fadeIn);
         }else{
           storage.insertHistory(_searchName.text);
-          return;
+
+          if(item['id'] != Provide.value<SongState>(context).selectPlaying['id']){
+            Provide.value<SongState>(context).addPlay(item);
+            await Provide.value<SongState>(context).reloadPlay();
+          }
+
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
         }
         

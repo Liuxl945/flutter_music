@@ -46,12 +46,10 @@ class SongState with ChangeNotifier{
   List sequenceList = [];//随机播放列表
   PlayerMode mode = PlayerMode.sequence;//播放模式
   int currentIndex = 0;//选中的歌曲列表下标
-  bool playing = false;//是否播放
-  bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
   String audioUrl = '';
   Map selectPlaying = {};//当前播放的歌曲
-  PlayerState playerState = PlayerState.stopped;
+  PlayerState playerState = PlayerState.stopped; //是否播放
 
   Duration duration;
   Duration position;
@@ -73,8 +71,26 @@ class SongState with ChangeNotifier{
     }
     selectPlaying = playlist[index];
     currentIndex = index;
-    fullScreen = true;
 
+    notifyListeners();
+  }
+
+  randomPlay(List list,{int index = 0}){
+    mode = PlayerMode.random;
+    sequenceList = list;
+    final List randomList = shuffle(list);
+    playlist = randomList;
+
+    selectPlaying = playlist[index];
+    currentIndex = index;
+
+    notifyListeners();
+  }
+
+  addPlay(Map list){
+    playlist.add(list);
+    currentIndex = playlist.length -1 ;
+    selectPlaying = playlist[currentIndex];
     notifyListeners();
   }
 
