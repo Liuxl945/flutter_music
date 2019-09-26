@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music/widgets/play/mini_play.dart';
 import 'package:flutter_music/widgets/tab/header.dart';
 import 'package:flutter_music/widgets/tab/tab.dart';
 
@@ -19,7 +20,8 @@ class CommonNavigation extends StatelessWidget {
             TabNav(params:params),
             Expanded(
               child: listChildren,
-            )
+            ),
+            MiniPlay(),
           ],
         ),
       ),

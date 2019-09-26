@@ -45,16 +45,23 @@ class SongState with ChangeNotifier{
   List playlist = [];//播放列表
   List sequenceList = [];//随机播放列表
   PlayerMode mode = PlayerMode.sequence;//播放模式
-  int currentIndex = -1;//选中的歌曲列表下标
+  int currentIndex = 0;//选中的歌曲列表下标
   bool playing = false;//是否播放
   bool fullScreen = false;//是否全屏显示
   AudioPlayer audioPlayer = AudioPlayer(); //歌曲播放控制器
   String audioUrl = '';
-  Map selectPlaying = {};
+  Map selectPlaying;//当前播放的歌曲
   PlayerState playerState = PlayerState.stopped;
 
   Duration duration;
   Duration position;
+  double sliderValue = 0;
+
+  AnimationController avatarController;
+
+  setAvatarController(controller){
+    avatarController = controller;
+  }
 
   selectPlay(List list,int index){
     if(mode == PlayerMode.random){
@@ -117,7 +124,6 @@ class SongState with ChangeNotifier{
   }
 
   play() async {
-
     if(audioUrl == ''){
       await getAudioUrl();
     }
@@ -139,6 +145,10 @@ class SongState with ChangeNotifier{
 
       audioPlayer.onAudioPositionChanged.listen((p){
         position = p;
+        if(duration != null){
+
+          sliderValue = position.inMilliseconds / duration.inMilliseconds;
+        }
         notifyListeners();
       });
     }
@@ -150,6 +160,7 @@ class SongState with ChangeNotifier{
     if(result == 1){
       playerState = PlayerState.paused;
     }
+    // avatarController?.stop();
     notifyListeners();
   }
 
@@ -187,14 +198,23 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
-  togglePlaying(){
+  togglePlaying() async{
     if(playerState == PlayerState.playing){
       playerState = PlayerState.paused;
     }else{
       playerState = PlayerState.playing;
     }
-    playerState == PlayerState.playing ? play() : pause();
+    playerState == PlayerState.playing ? await play() : await pause();
 
+    notifyListeners();
+  }
+
+   changePosition(double value) async{
+    await pause();
+    position = Duration(milliseconds: (duration.inMilliseconds * value).toInt());
+    sliderValue = position.inMilliseconds / duration.inMilliseconds;
+
+    await play();
     notifyListeners();
   }
 

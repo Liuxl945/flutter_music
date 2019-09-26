@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/widgets/music/song_list.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:flutter_music/widgets/play/mini_play.dart';
 
 class MusicList extends StatefulWidget {
   final List songs;
@@ -23,7 +24,6 @@ class _MusicListState extends State<MusicList> {
   
   @override
   void initState() {
-
     scrollController.addListener((){
       double position = scrollController.offset.toDouble();
       if(position >= imageHeight){
@@ -62,17 +62,25 @@ class _MusicListState extends State<MusicList> {
   }
 
   Widget mainBoby(){
-    return ListView(
-      controller: scrollController,
+    return Column(
       children: <Widget>[
-        Stack(
-          children: <Widget>[
-            backgroundImage(),
-            background(),
-            playBtn(),
-          ],
+        Expanded(
+          child: ListView(
+            controller: scrollController,
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  backgroundImage(),
+                  background(),
+                  playBtn(),
+                ],
+              ),
+              SongList(songs:widget.songs,rank: widget.rank,),
+            ],
+          ),
         ),
-        SongList(songs:widget.songs,rank: widget.rank,),
+        
+        MiniPlay() //迷你播放器
       ],
     );
   }

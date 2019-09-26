@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
-import 'package:flutter_music/plugin/fit.dart';
-
 
 int _stamp2int(final String stamp) {
   final int indexOfColon = stamp.indexOf(":");
@@ -92,7 +90,7 @@ class LyricState with ChangeNotifier{
     notifyListeners();
   }
 
-  play({int startTime = 0}){
+  play({int startTime = 0,change = false}){
     if(lyric.length == 0){
       return;
     }else{
@@ -100,6 +98,11 @@ class LyricState with ChangeNotifier{
       curNum = _findCurNum(startTime,lyric);
       startStamp = DateTime.now().microsecondsSinceEpoch - startTime;
      
+      if(change){
+        curLine = curNum; 
+      }
+
+
       if(curNum < lyric.length){
         countdownTimer?.cancel();
         _playRest();
@@ -128,7 +131,7 @@ class LyricState with ChangeNotifier{
   }
 
 
-  setLyric(mid) async{
+  setLyric(String mid) async{
     final res = await MusicApi.getLyric(mid);
     Map data;
     try{
@@ -151,9 +154,15 @@ class LyricState with ChangeNotifier{
     pauseStamp = 0;//暂停的时间
   }
 
-  prevNext(mid) async{
+  prevNext(String mid) async{
     await setLyric(mid);
     reset();
     play();
+  }
+
+  changePosition(double value){
+    stop();
+    print(value);
+    play(startTime:(value*1000).toInt(),change:true);
   }
 }

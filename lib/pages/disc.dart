@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
 import 'package:flutter_music/provide/lyric.dart';
 import 'package:flutter_music/variable.dart' as config;
+import 'package:flutter_music/widgets/play/rotate_avatar.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_music/provide/song.dart';
@@ -19,7 +20,6 @@ class DiscPage extends StatefulWidget {
 class _DiscPageState extends State<DiscPage> {
 
   int _scrollIndex = 0;
-
 
   @override
   Widget build(BuildContext context){
@@ -117,13 +117,8 @@ class _DiscPageState extends State<DiscPage> {
             Radius.circular(300),
           ),
         ),
-        child: ClipOval(
-          child: Provide<SongState>(builder: (context, child, counter){
-            return Image.network(counter.playlist[counter.currentIndex]['image']??'http://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG.jpg?max_age=2592000',
-              fit: BoxFit.cover,
-            );
-          })
-        ),
+        child: RotateAvatar(),
+        
       );
     }
 
@@ -182,12 +177,33 @@ class _DiscPageState extends State<DiscPage> {
               Container(
                 width: screen.setWidth(460),
                 height: screen.setHeight(8),
-                decoration: BoxDecoration(
-                color: Colors.deepOrange,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
+                // decoration: BoxDecoration(
+                // color: Colors.deepOrange,
+                //   borderRadius: BorderRadius.all(
+                //     Radius.circular(8),
+                //   ),
+                // ),
+                child: SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight:screen.setHeight(8),
                   ),
-                ),
+                  
+                  child: Provide<SongState>(builder: (context, child, counter){
+                    return Slider(
+                      onChanged: (newValue) async{
+                        // print(newValue);
+                        await counter.changePosition(newValue);
+                        lyricState.changePosition(counter.duration.inMilliseconds * newValue);
+                      },
+                      value: counter.sliderValue ?? 0,
+                      activeColor:config.PrimaryColor,
+                    );
+                  }),
+                  
+                  
+                )
+                
+                
               ),
               Container(
                 width: screen.setWidth(70),
@@ -245,6 +261,7 @@ class _DiscPageState extends State<DiscPage> {
             ),
             Container(
               width: screen.setWidth(214),
+              alignment:Alignment.center,
               child: IconButton(
                 onPressed: (){
                   songState.togglePlaying();
@@ -383,3 +400,5 @@ class _DiscPageState extends State<DiscPage> {
     );
   }
 }
+
+
