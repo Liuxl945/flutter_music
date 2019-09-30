@@ -7,6 +7,7 @@ import 'package:flutter_music/route/route.dart';
 import 'package:flutter_music/widgets/music/song_list.dart';
 import 'package:flutter_music/variable.dart' as config;
 import 'package:flutter_music/widgets/play/mini_play.dart';
+import 'package:flutter_music/widgets/play/play_btn_content.dart';
 import 'package:provide/provide.dart';
 
 class MusicList extends StatefulWidget {
@@ -156,35 +157,6 @@ class _MusicListState extends State<MusicList> {
     );
   }
 
-  Widget playBtnContent(){
-    return Container(
-      width: screen.setWidth(270),
-      height: screen.setWidth(64),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(200),
-        ),
-        border: Border.all(width: 1,color: config.PrimaryColor),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(
-            Icons.play_circle_outline,
-            color: config.PrimaryColor,
-          ),
-          SizedBox(width: screen.setWidth(10)),
-          Text('随机播放全部',
-            style: TextStyle(
-              color: config.PrimaryColor,
-              fontSize: screen.setSp(24),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   // 随机播放按钮
   Widget playBtn(){
@@ -199,7 +171,7 @@ class _MusicListState extends State<MusicList> {
 
           Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
         },
-        child: playBtnContent(),
+        child: PlayBtnContent(color: config.PrimaryColor),
       ),
     );
   }

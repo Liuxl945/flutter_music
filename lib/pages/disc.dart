@@ -165,7 +165,7 @@ class _DiscPageState extends State<DiscPage> {
           child: Row(
             children: <Widget>[
               Container(
-                width: screen.setWidth(64),
+                width: screen.setWidth(62),
                 child: Text(
                   counter.position != null ? (counter.position?.toString()?.substring(2,7)) : '00:00',
                   style: TextStyle(
@@ -174,39 +174,31 @@ class _DiscPageState extends State<DiscPage> {
                   ),
                 ),
               ),
-              Container(
-                width: screen.setWidth(472),
-                height: screen.setWidth(8),
-                // decoration: BoxDecoration(
-                // color: Colors.deepOrange,
-                //   borderRadius: BorderRadius.all(
-                //     Radius.circular(8),
-                //   ),
-                // ),
-                child: SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    trackHeight:screen.setWidth(8),
+              Expanded(
+                child: Container(
+                  height: screen.setWidth(8),
+                  
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight:screen.setWidth(8),
+                    ),
+                    
+                    child: Provide<SongState>(builder: (context, child, counter){
+                      return Slider(
+                        onChanged: (newValue) async{
+                          // print(newValue);
+                          await counter.changePosition(newValue);
+                          lyricState.changePosition(counter.duration.inMilliseconds * newValue);
+                        },
+                        value: counter.sliderValue ?? 0,
+                        activeColor:config.PrimaryColor,
+                      );
+                    }),
                   ),
-                  
-                  child: Provide<SongState>(builder: (context, child, counter){
-                    return Slider(
-                      onChanged: (newValue) async{
-                        // print(newValue);
-                        await counter.changePosition(newValue);
-                        lyricState.changePosition(counter.duration.inMilliseconds * newValue);
-                      },
-                      value: counter.sliderValue ?? 0,
-                      activeColor:config.PrimaryColor,
-                    );
-                  }),
-                  
-                  
-                )
-                
-                
+                ),
               ),
               Container(
-                width: screen.setWidth(64),
+                width: screen.setWidth(62),
                 alignment: Alignment.centerRight,
                 child: Text(
                   counter.position != null ? (counter.duration?.toString()?.substring(2,7)) : '00:00',
@@ -233,15 +225,18 @@ class _DiscPageState extends State<DiscPage> {
             Expanded(
               child: Container(
                 alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: (){
-                    
-                  },
-                  icon: Icon(Icons.copyright,
-                  color: config.PrimaryColor,
-                  size: screen.setSp(60),
-                  ),
-                ),
+                child: Provide<SongState>(builder: (context, child, counter){
+                  return IconButton(
+                    onPressed: (){
+                      counter.changeMode();
+                    },
+                    icon: Icon(
+                      counter.mode == PlayerMode.sequence ? Icons.repeat : counter.mode == PlayerMode.loop ? Icons.repeat_one : Icons.shuffle,
+                      color: config.PrimaryColor,
+                      size: screen.setSp(60),
+                    ),
+                  );
+                }),
               ),
             ),
             Expanded(
@@ -252,9 +247,10 @@ class _DiscPageState extends State<DiscPage> {
                     await songState.prev();
                     await lyricState.prevNext(songState.playlist[songState.currentIndex]['mid']);
                   },
-                  icon: Icon(Icons.skip_previous,
-                  color: config.PrimaryColor,
-                  size: screen.setSp(60),
+                  icon: Icon(
+                    Icons.skip_previous,
+                    color: config.PrimaryColor,
+                    size: screen.setSp(60),
                   ),
                 ),
               ),
@@ -262,16 +258,19 @@ class _DiscPageState extends State<DiscPage> {
             Container(
               width: screen.setWidth(214),
               alignment:Alignment.center,
-              child: IconButton(
-                onPressed: (){
-                  songState.togglePlaying();
-                  lyricState.togglePlaying();
-                },
-                icon: Icon(Icons.play_circle_outline,
-                color: config.PrimaryColor,
-                size: screen.setSp(80),
-                ),
-              ),
+              child: Provide<SongState>(builder: (context, child, counter){
+                return IconButton(
+                  onPressed: (){
+                    songState.togglePlaying();
+                    lyricState.togglePlaying();
+                  },
+                  icon: Icon(
+                    counter.playerState == PlayerState.playing ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                    color: config.PrimaryColor,
+                    size: screen.setSp(80),
+                  ),
+                );
+              }),
             ),
             Expanded(
               child: Container(
@@ -281,9 +280,10 @@ class _DiscPageState extends State<DiscPage> {
                     await songState.next();
                     await lyricState.prevNext(songState.playlist[songState.currentIndex]['mid']);
                   },
-                  icon: Icon(Icons.skip_next,
-                  color: config.PrimaryColor,
-                  size: screen.setSp(60),
+                  icon: Icon(
+                    Icons.skip_next,
+                    color: config.PrimaryColor,
+                    size: screen.setSp(60),
                   ),
                 ),
               ),
@@ -295,9 +295,10 @@ class _DiscPageState extends State<DiscPage> {
                   onPressed: (){
 
                   },
-                  icon: Icon(Icons.favorite_border,
-                  color: config.PrimaryColor,
-                  size: screen.setSp(60),
+                  icon: Icon(
+                    Icons.favorite_border,
+                    color: config.PrimaryColor,
+                    size: screen.setSp(60),
                   ),
                 ),
               ),
@@ -305,6 +306,35 @@ class _DiscPageState extends State<DiscPage> {
           ],
         ),
       );
+    }
+
+
+    Widget cdContainer(){
+      return Container(
+        child: Column(
+          children: <Widget>[
+            songCdImage(),
+            Container(
+              padding: EdgeInsets.only(top: screen.setWidth(60)),
+              child: Container(
+                width: screen.setWidth(600),
+                alignment: Alignment.center,
+                child: Provide<LyricState>(builder: (context, child, counter){
+                  
+                  return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '' ,
+                    style: TextStyle(
+                      color: config.PrimaryFontColor,
+                      fontSize: screen.setSp(28),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
+      ); 
     }
 
     Widget cdLyricSwiper(){
@@ -321,31 +351,7 @@ class _DiscPageState extends State<DiscPage> {
           itemBuilder: (BuildContext context, int index){
 
             if(index == 0){
-              return Container(
-                child: Column(
-                  children: <Widget>[
-                    songCdImage(),
-                    Container(
-                      padding: EdgeInsets.only(top: screen.setWidth(60)),
-                      child: Container(
-                        width: screen.setWidth(600),
-                        alignment: Alignment.center,
-                        child: Provide<LyricState>(builder: (context, child, counter){
-                          
-                          return Text(counter.lyric.length > 0 ? counter.lyric[counter.curLine]['txt'] : '' ,
-                            style: TextStyle(
-                              color: config.PrimaryFontColor,
-                              fontSize: screen.setSp(28),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return cdContainer();
             }else{
               return Lyric();
             }

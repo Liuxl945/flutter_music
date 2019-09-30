@@ -225,12 +225,17 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
-   changePosition(double value) async{
+  changePosition(double value) async{
     await pause();
     position = Duration(milliseconds: (duration.inMilliseconds * value).toInt());
     sliderValue = position.inMilliseconds / duration.inMilliseconds;
 
     await play();
+    notifyListeners();
+  }
+
+  changeMode(){
+    mode = mode == PlayerMode.sequence ? PlayerMode.loop : mode == PlayerMode.loop ? PlayerMode.random : PlayerMode.sequence;
     notifyListeners();
   }
 

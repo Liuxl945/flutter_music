@@ -71,14 +71,16 @@ class MiniPlay extends StatelessWidget {
             lyricState.togglePlaying();
           },
           child: Container(
-            color: Colors.transparent,
+            color: Color.fromRGBO(51, 51, 51, 1),
             width: screen.setWidth(100),
             height: screen.setWidth(80),
-            child: Icon(
-              Icons.play_circle_outline,
-              color: config.PrimaryColor,
-              size: screen.setSp(80),
-            ),
+            child: Provide<SongState>(builder: (context, child, counter){
+              return Icon(
+                counter.playerState == PlayerState.playing ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                color: config.PrimaryColor,
+                size: screen.setSp(80),
+              );
+            }),
           ),
         ),
         
