@@ -155,8 +155,11 @@ class SongState with ChangeNotifier{
     if(result == 1){
       playerState = PlayerState.playing;
       // success
-      audioPlayer.onDurationChanged.listen((value){
+      audioPlayer.onDurationChanged.listen((value) async{
         duration = value;
+        if(duration.inMilliseconds == position.inMilliseconds){
+          await next();
+        }
         notifyListeners();
       });
 
