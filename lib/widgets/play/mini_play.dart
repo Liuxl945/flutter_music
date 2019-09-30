@@ -83,21 +83,6 @@ class MiniPlay extends StatelessWidget {
             }),
           ),
         ),
-        
-        // GestureDetector(
-        //   onTap: (){
-        //     print('11111');
-        //   },
-        //   child: Container(
-        //     width: screen.setWidth(100),
-        //     height: screen.setWidth(80),
-        //     color: Colors.deepOrange,
-        //     child: Icon(
-        //       Icons.airline_seat_legroom_extra,
-        //       color: Colors.white,
-        //     ),
-        //   ),
-        // ),
       ],
     );
   } 

@@ -57,15 +57,6 @@ flutter:
     - assets/image/first3x.png
     - assets/image/second3x.png
     - assets/image/third3x.png
-    - assets/svg/fuchouzhelianmeng-lieying.svg
-    - assets/svg/hanweizhelianmeng-yemoxia.svg
-    - assets/svg/qiyiboshi.svg
-    - assets/svg/yirenzu-heifuwang.svg
-    - assets/svg/wode.svg
-    - assets/svg/gouwuche.svg
-    - assets/svg/search.svg
-    - assets/svg/right.svg
-    - assets/svg/left.svg
 
 
   # To add assets to your application, add an assets section, like this:

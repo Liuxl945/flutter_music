@@ -84,7 +84,6 @@ class SongState with ChangeNotifier{
 
     selectPlaying = playlist[index];
     currentIndex = index;
-
     notifyListeners();
   }
 
@@ -182,12 +181,17 @@ class SongState with ChangeNotifier{
     notifyListeners();
   }
 
+  loop() async{
+    position = Duration();
+    await stop();
+    await play();
+  }
+
   prev() async{
     print('prev');
-    if(playlist.length == 1){
-      position = Duration();
-      await stop();
-      await play();
+    
+    if(playlist.length == 1 || mode == PlayerMode.loop){
+      await loop();
     }else{
       
       int index = currentIndex - 1;
@@ -204,11 +208,9 @@ class SongState with ChangeNotifier{
 
   next() async{
     print('next');
-    if(playlist.length == 1){
+    if(playlist.length == 1 || mode == PlayerMode.loop){
       // 循环播放
-      position = Duration();
-      await stop();
-      await play();
+      await loop();
     }else{
       int index = currentIndex + 1;
       if(index == playlist.length){
@@ -244,6 +246,11 @@ class SongState with ChangeNotifier{
 
   changeMode(){
     mode = mode == PlayerMode.sequence ? PlayerMode.loop : mode == PlayerMode.loop ? PlayerMode.random : PlayerMode.sequence;
+    
+    if(mode == PlayerMode.random){
+      randomPlay(playlist);
+    }
+    
     notifyListeners();
   }
 
