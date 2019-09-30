@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/api/api.dart';
+import 'package:flutter_music/storage/recent_listen.dart' as storage;
 
 Map playMode = {
   'sequence': 0,
@@ -142,6 +143,7 @@ class SongState with ChangeNotifier{
   play() async {
     if(audioUrl == ''){
       await getAudioUrl();
+      await storage.insertRecent(json.encode(playlist[currentIndex]));
     }
 
     final playPosition = (position != null &&

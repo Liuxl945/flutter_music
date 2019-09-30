@@ -2,26 +2,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<List<String>> historyData() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> history = prefs.getStringList('searchHistory') ?? [];
-  return history;
+  List<String> data = prefs.getStringList('searchHistory') ?? [];
+  return data;
 }
 
 // 添加搜索历史
 insertHistory(String name) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> history = prefs.getStringList('searchHistory') ?? [];
-  history.add(name);
+  List<String> data = prefs.getStringList('searchHistory') ?? [];
+  data.add(name);
 
-  await prefs.setStringList('searchHistory', history);
+  await prefs.setStringList('searchHistory', data);
 }
 
 // 删除搜索历史
 deleteSearchName(String name) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> history = prefs.getStringList('searchHistory') ?? [];
-  history.remove(name);
-  print(history);
-  await prefs.setStringList('searchHistory', history);
+  List<String> data = prefs.getStringList('searchHistory') ?? [];
+  data.remove(name);
+  print(data);
+  await prefs.setStringList('searchHistory', data);
 }
 
 clearSearchHistory() async {

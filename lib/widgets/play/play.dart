@@ -26,6 +26,7 @@ class _PlayMusicState extends State<PlayMusic> {
   Widget build(BuildContext context){
     
     SongState songState = Provide.value<SongState>(context);
+    
     LyricState lyricState = Provide.value<LyricState>(context);
     if(songState.playerState == PlayerState.stopped && songState.audioUrl == ''){
       initPlay(songState,lyricState);

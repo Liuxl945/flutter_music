@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_music/plugin/fit.dart';
@@ -10,6 +11,7 @@ import 'package:provide/provide.dart';
 import 'package:flutter_music/provide/song.dart';
 import 'package:flutter_music/widgets/play/play.dart';
 import 'package:flutter_music/widgets/play/lyric.dart';
+import 'package:flutter_music/storage/i_like.dart' as storage;
 
 class DiscPage extends StatefulWidget {
   DiscPage({Key key}) : super(key: key);
@@ -25,6 +27,7 @@ class _DiscPageState extends State<DiscPage> {
   Widget build(BuildContext context){
     SongState songState = Provide.value<SongState>(context);
     LyricState lyricState = Provide.value<LyricState>(context);
+    
 
     // 背景图片
     Widget bgImage(song){
@@ -214,10 +217,53 @@ class _DiscPageState extends State<DiscPage> {
       });
     }
 
-    
+    Widget iLikeBtnTF(bool isLike){
+      return IconButton(
+        onPressed: () async{
+          if(isLike){
+            await storage.deleteILike(json.encode(songState.playlist[songState.currentIndex]));
+          }else{
+            await storage.insertILike(json.encode(songState.playlist[songState.currentIndex]));
+          }
+
+          setState(() {});
+        },
+        icon: Icon(
+          isLike ? Icons.favorite : Icons.favorite_border,
+          color: isLike ? config.PrimaryColor : config.PrimaryColor,
+          size: screen.setSp(60),
+        ),
+      ); 
+    }
+
+    Widget iLikeBtn(){
+      Future<List<String>> iLikeData = storage.iLikeData();
+      return FutureBuilder(
+        future: iLikeData,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if(snapshot.hasData){
+            List iLike = json.decode(json.encode(snapshot.data)) ?? [];
+
+            bool isLike = false;
+            iLike.forEach((items){
+              Map item = json.decode(items);
+              if(item['mid'] == songState.playlist[songState.currentIndex]['mid']){
+                isLike = true;
+                return;
+              }
+            });
+
+            return iLikeBtnTF(isLike);
+          }else{
+            return iLikeBtnTF(false);
+          }
+        },
+      );
+    }
 
     // 控制按钮
     Widget controlBtn(){
+
       return Container(
         height: screen.setWidth(80),
         child: Row(
@@ -291,16 +337,7 @@ class _DiscPageState extends State<DiscPage> {
             Expanded(
               child: Container(
                 alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: (){
-
-                  },
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: config.PrimaryColor,
-                    size: screen.setSp(60),
-                  ),
-                ),
+                child: iLikeBtn(),
               ),
             ),
           ],
