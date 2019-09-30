@@ -10,8 +10,8 @@ Future<List<String>> iLikeData() async{
 insertILike(String item) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String> data = prefs.getStringList('iLike') ?? [];
+  data.remove(item);
   data.add(item);
-
   await prefs.setStringList('iLike', data);
 }
 

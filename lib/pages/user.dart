@@ -144,6 +144,16 @@ class _UserPageState extends State<UserPage> {
           if(snapshot.hasData){
             List iLike = json.decode(json.encode(snapshot.data)) ?? [];
 
+            if(iLike.length == 0){
+              return Container(
+                alignment: Alignment.center,
+                child: Text(swiperIndex == 0 ? '暂时没有喜欢的歌曲' : '暂时没有听歌曲',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: iLike.length,
               itemBuilder: (BuildContext context, int index) {
@@ -156,7 +166,14 @@ class _UserPageState extends State<UserPage> {
               },
             );
           }else{
-            return Container();
+            return Container(
+              alignment: Alignment.center,
+              child: Text('数据加载中',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            );
           }
         },
       );
@@ -192,10 +209,35 @@ class _UserPageState extends State<UserPage> {
             ),
             
             SizedBox(height: screen.setWidth(40)),
-            Container(
-              height: screen.setWidth(64),
-              child: PlayBtnContent(color: config.PrimaryFontColor), //随机播放全部
+            GestureDetector(
+              onTap: () async{
+                List songs;
+                if(swiperIndex == 0){
+                  songs = await storage.iLikeData();
+                }else{
+                  songs = await storage1.recentData();
+                }
+
+                if(songs.length == 0){
+                  return;
+                }
+
+                List newSongs = [];
+                songs.forEach((item){
+                  newSongs.add(json.decode(item));
+                });
+                
+                songState.randomPlay(newSongs);
+                await songState.reloadPlay();
+
+                Application.router.navigateTo(context, Routes.disc,transition: TransitionType.fadeIn);
+              },
+              child: Container(
+                height: screen.setWidth(64),
+                child: PlayBtnContent(color: config.PrimaryFontColor), //随机播放全部
+              ),
             ),
+            
             SizedBox(height: screen.setWidth(10)),
             
             Expanded(

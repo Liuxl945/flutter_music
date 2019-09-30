@@ -10,8 +10,8 @@ Future<List<String>> historyData() async{
 insertHistory(String name) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String> data = prefs.getStringList('searchHistory') ?? [];
+  data.remove(name);
   data.add(name);
-
   await prefs.setStringList('searchHistory', data);
 }
 
@@ -20,7 +20,6 @@ deleteSearchName(String name) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String> data = prefs.getStringList('searchHistory') ?? [];
   data.remove(name);
-  print(data);
   await prefs.setStringList('searchHistory', data);
 }
 

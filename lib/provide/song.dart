@@ -185,8 +185,11 @@ class SongState with ChangeNotifier{
   prev() async{
     print('prev');
     if(playlist.length == 1){
-
+      position = Duration();
+      await stop();
+      await play();
     }else{
+      
       int index = currentIndex - 1;
       if(index == -1){
         index = playlist.length - 1 ;
@@ -203,6 +206,9 @@ class SongState with ChangeNotifier{
     print('next');
     if(playlist.length == 1){
       // 循环播放
+      position = Duration();
+      await stop();
+      await play();
     }else{
       int index = currentIndex + 1;
       if(index == playlist.length){

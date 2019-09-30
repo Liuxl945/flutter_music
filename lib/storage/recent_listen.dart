@@ -10,8 +10,8 @@ Future<List<String>> recentData() async{
 insertRecent(String name) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String> data = prefs.getStringList('recent') ?? [];
+  data.remove(name);
   data.add(name);
-
   await prefs.setStringList('recent', data);
 }
 
