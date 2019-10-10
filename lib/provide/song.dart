@@ -157,8 +157,10 @@ class SongState with ChangeNotifier{
       // success
       audioPlayer.onDurationChanged.listen((value) async{
         duration = value;
-        if(duration.inMilliseconds == position.inMilliseconds){
+        
+        if(duration?.inSeconds == position?.inSeconds){
           await next();
+          // await lyricState?.prevNext(playlist[currentIndex]['mid']);
         }
         notifyListeners();
       });
@@ -167,7 +169,7 @@ class SongState with ChangeNotifier{
         position = p;
         if(duration != null){
 
-          sliderValue = position.inMilliseconds / duration.inMilliseconds;
+          sliderValue = position.inMilliseconds / duration?.inMilliseconds;
         }
         notifyListeners();
       });
